@@ -388,6 +388,9 @@
       font-size: 0.8rem;
       text-decoration: none;
       font-weight: 600;
+      max-inline-size: 100%;
+      word-break: break-all;
+      overflow-wrap: anywhere;
       transition: border-color 0.15s, background 0.15s;
     }
 
@@ -898,7 +901,17 @@
         </div>
 
         <div class="card">
-          <h2 class="section-title">3. Estratificação Microterritorial e Estimação de Bandas de Credibilidade (95%)</h2>
+          <h2 class="section-title">3. Arquitetura da Urna Eletrônica, Sigilo e Normalização Temporal</h2>
+          <p class="section-desc">Por que a análise de horário de encerramento combina registros de eventos e resultados por seção:</p>
+          <ul style="padding-inline-start: 1.2rem; display: flex; flex-direction: column; gap: 0.65rem; font-size: 0.91rem;">
+            <li><strong>Separação Estrutural para Proteção do Sigilo:</strong> A arquitetura da urna eletrônica segrega os dados em três estruturas independentes: (i) o <em>Registro Digital do Voto</em>, que grava os votos individuais embaralhados por permutação pseudoaleatória e sem carimbo de tempo, impedindo que o último eleitor da fila tenha seu voto identificado; (ii) o <em>Registro Cronológico de Eventos</em>, que grava o horário exato de cada confirmação de voto e do encerramento da seção sem registrar o número votado; e (iii) o <em>Boletim de Urna</em>, que consolida o total de votos por candidato na seção.</li>
+            <li><strong>Padronização de Fuso Horário (Horário de Brasília):</strong> Como o encerramento das eleições foi unificado pelo Horário Oficial de Brasília (<code>UTC-3</code>), todos os carimbos de tempo registrados no horário local das urnas situadas em fusos distintos (<code>UTC-4</code> e <code>UTC-5</code>) passam por conversão prévia antes da classificação nas faixas de fechamento e da contagem de votos posteriores às 17h00.</li>
+            <li><strong>Reconstituição de Urnas de Contingência e Critério de Prorrogação:</strong> Nas seções em que houve substituição de equipamento durante o dia, os registros cronológicos da urna original e da urna de contingência são descompactados e unificados recursivamente para preservar os eventos do período da manhã. Por fim, as seções prorrogadas são subdivididas entre aquelas que efetivamente registraram eleitores após as 17h00 e aquelas que permaneceram abertas até as 19h00 apenas por cumprimento formal da prorrogação, sem fluxo residual de eleitores.</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <h2 class="section-title">4. Estratificação Microterritorial e Estimação de Bandas de Credibilidade (95%)</h2>
           <p class="section-desc">Modelagem matemática da decomposição de votos, condições de Karush-Kuhn-Tucker e quantificação da incerteza amostral:</p>
           <ul style="padding-inline-start: 1.2rem; display: flex; flex-direction: column; gap: 0.85rem; font-size: 0.91rem;">
             <li><strong>1. Justificativa da Estratificação Microterritorial (UF × Capital vs. Interior):</strong>
@@ -945,16 +958,6 @@
         </div>
 
         <div class="card">
-          <h2 class="section-title">4. Arquitetura da Urna Eletrônica, Sigilo e Normalização Temporal</h2>
-          <p class="section-desc">Por que a análise de horário de encerramento combina registros de eventos e resultados por seção:</p>
-          <ul style="padding-inline-start: 1.2rem; display: flex; flex-direction: column; gap: 0.65rem; font-size: 0.91rem;">
-            <li><strong>Separação Estrutural para Proteção do Sigilo:</strong> A arquitetura da urna eletrônica segrega os dados em três estruturas independentes: (i) o <em>Registro Digital do Voto</em>, que grava os votos individuais embaralhados por permutação pseudoaleatória e sem carimbo de tempo, impedindo que o último eleitor da fila tenha seu voto identificado; (ii) o <em>Registro Cronológico de Eventos</em>, que grava o horário exato de cada confirmação de voto e do encerramento da seção sem registrar o número votado; e (iii) o <em>Boletim de Urna</em>, que consolida o total de votos por candidato na seção.</li>
-            <li><strong>Padronização de Fuso Horário (Horário de Brasília):</strong> Como o encerramento das eleições foi unificado pelo Horário Oficial de Brasília (<code>UTC-3</code>), todos os carimbos de tempo registrados no horário local das urnas situadas em fusos distintos (<code>UTC-4</code> e <code>UTC-5</code>) passam por conversão prévia antes da classificação nas faixas de fechamento e da contagem de votos posteriores às 17h00.</li>
-            <li><strong>Reconstituição de Urnas de Contingência e Critério de Prorrogação:</strong> Nas seções em que houve substituição de equipamento durante o dia, os registros cronológicos da urna original e da urna de contingência são descompactados e unificados recursivamente para preservar os eventos do período da manhã. Por fim, as seções prorrogadas são subdivididas entre aquelas que efetivamente registraram eleitores após as 17h00 e aquelas que permaneceram abertas até as 19h00 apenas por cumprimento formal da prorrogação, sem fluxo residual de eleitores.</li>
-          </ul>
-        </div>
-
-        <div class="card">
           <h2 class="section-title">5. Limitações Metodológicas, Não-Causalidade e Falácia Ecológica</h2>
           <p class="section-desc">Diretrizes epistemológicas sobre o que o modelo analítico pode e não pode afirmar:</p>
           <ul style="padding-inline-start: 1.2rem; display: flex; flex-direction: column; gap: 0.65rem; font-size: 0.91rem;">
@@ -970,7 +973,7 @@
           <ul style="padding-inline-start: 1.2rem; display: flex; flex-direction: column; gap: 0.65rem; font-size: 0.91rem;">
             <li><strong>Repositório de Código Aberto (GitHub):</strong>
               <div style="margin-block-start:0.35rem;margin-block-end:0.45rem;">
-                <a href="https://github.com/renanctm/MapaDaUrna" target="_blank" rel="noopener noreferrer" class="pill-script" style="border-color:var(--accent);font-weight:700;">📦 https://github.com/renanctm/MapaDaUrna</a>
+                <a href="https://github.com/renanctm/MapaDaUrna" target="_blank" rel="noopener noreferrer" class="pill-script" style="border-color:var(--accent);font-weight:700;">📦 github.com/renanctm/MapaDaUrna</a>
               </div>
             </li>
             <li><strong>Código Aberto do Pipeline (Download e Visualização Direta):</strong>
