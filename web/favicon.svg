@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="bodyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <linearGradient id="screenGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#090d16"/>
+      <stop offset="100%" stop-color="#111827"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Corpo da Urna Eletrônica -->
+  <rect x="4" y="10" width="56" height="46" rx="8" fill="url(#bodyGrad)" stroke="#38bdf8" stroke-width="2"/>
+
+  <!-- Tela da Urna (à esquerda) -->
+  <rect x="8" y="16" width="24" height="32" rx="4" fill="url(#screenGrad)" stroke="#475569" stroke-width="1.5"/>
+
+  <!-- Símbolo de Confirmação / Voto (Checkmark verde vibrante) -->
+  <path d="M 13 32 L 18 38 L 28 24" fill="none" stroke="#10b981" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- Teclado Numérico (à direita) -->
+  <rect x="37" y="17" width="4.5" height="4.5" rx="1" fill="#94a3b8"/>
+  <rect x="43" y="17" width="4.5" height="4.5" rx="1" fill="#94a3b8"/>
+  <rect x="49" y="17" width="4.5" height="4.5" rx="1" fill="#94a3b8"/>
+
+  <rect x="37" y="23" width="4.5" height="4.5" rx="1" fill="#94a3b8"/>
+  <rect x="43" y="23" width="4.5" height="4.5" rx="1" fill="#94a3b8"/>
+  <rect x="49" y="23" width="4.5" height="4.5" rx="1" fill="#94a3b8"/>
+
+  <rect x="37" y="29" width="4.5" height="4.5" rx="1" fill="#94a3b8"/>
+  <rect x="43" y="29" width="4.5" height="4.5" rx="1" fill="#94a3b8"/>
+  <rect x="49" y="29" width="4.5" height="4.5" rx="1" fill="#94a3b8"/>
+
+  <!-- Botões de Ação da Urna Brasileira: BRANCO, CORRIGE, CONFIRMA -->
+  <rect x="36" y="38" width="5.5" height="6.5" rx="1" fill="#f8fafc" stroke="#cbd5e1" stroke-width="0.5"/>
+  <rect x="43" y="38" width="5.5" height="6.5" rx="1" fill="#ea580c"/>
+  <rect x="50" y="36" width="7.5" height="9.5" rx="1.5" fill="#10b981"/>
+</svg>

@@ -1,0 +1,13 @@
+# =========================================================================
+# MAPA DA URNA - DEPENDÊNCIAS DO PIPELINE ANALÍTICO
+# Plataforma de Auditoria das Eleições Presidenciais 2026 (TSE)
+# =========================================================================
+
+# Álgebra linear, matrizes de transição e otimização restrita Karush-Kuhn-Tucker (KKT)
+numpy>=1.25.2
+
+# Geração do favicon multirresolução (16x16, 32x32, 48x48, 64x64)
+Pillow>=10.4.0
+
+# Opcional: validação cruzada alternativa via mínimos quadrados não-negativos
+scipy>=1.11.0

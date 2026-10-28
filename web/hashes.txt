@@ -1,0 +1,25 @@
+# =========================================================================
+# MAPA DA URNA - MANIFESTO DE INTEGRIDADE CRIPTOGRÁFICA (SHA-256)
+# Plataforma de Auditoria e Análise Estatística das Eleições Presidenciais 2026
+# Repositório de Dados Abertos do TSE - Totalização Censitária 100% (BR + ZZ)
+# Corte temporal da extração: 26/10/2026 às 18:30:00 BRT
+# =========================================================================
+
+c928321f63f2d095706fca73d4607c048d2ada23bda6876455d6911aaf1bc9c1  votacao_secao_2026_BR.zip (Base Bruta TSE - 499.206 Seções)
+ddc97d5891b5c05f73a3df1ec77d7aeb360b0a6b5e3478eebb612d02fd38b36e  dashboard_data.json
+ce754e33909ae918c23c37fbc0e6ce97b973b491e4ae6ea523eed397ee14e31f  eco_inference_slices.json
+6e40c12f254786e0285b404e95dae02f2af84842ac4e4f8068c7642af92f07cd  data.js
+a915522a564215f69e9e3b171ba1cf9462743a7d7a7b9778443a1cd16afd03e5  index.html
+4186c28007187ec84ec420d09adbdb7af077f16b53d2b5ed9316e9e9ec96402b  requirements.txt
+77363dcb10cd39c848f064fe96c3bcdb20bf81fcc91e07ef0261ad4243b7bd32  src/analyze_abstention_3rdparty.py
+c3426b0c4f94a093c505d4b99cdf32a8e5f9580944d59a8345aafe66773ab3c7  src/apply_constrained_eco.py
+7fa828788a22d66cf6b572af8666cd7314c4f5c28bcc5f65ae4970c86cdce272  src/bu_decoder.py
+6d68e3da9e4eae499ddafb34f579445e001124959d6faf112c0e76805c903191  src/build_general_t1_t2.py
+d3a0e84cf6b632d8c8206f81a40914820dc319beb13fa09ae4eadcf2ec1fb9b6  src/build_project_data.py
+89551fcf27cfa507d6447fe253588de7c6fa933247c449c9eb38e8b6c53d721f  src/check_uf_turnout.py
+65f0eccc387aeff655f400857e235d17d0897224a56c0f483033ee0ac4012e2a  src/compute_eco_uf_cap_int.py
+18be21f6069b5141a4b0abefe32992433faaef673483dd22c306948da14b02fd  src/crawl_extended_bus.py
+fd67c891e846065848f88b45211a7983454d9a3e2c58b790fd9c36e10dc7b36c  src/run_deep_migration.py
+f0e63bd9a8cbebe07069a757d1ebbbda04626cc34392dd6e934e6ed29b210615  src/test_mobile_render.py
+c5442c156cfb140ceda52e777837a548bee8690f7e12e85e15e3403004fd25c2  src/update_t1_t2_project.py
+9b9b94f8e267c633c8a37097ccc1a932335b269e19798c32afd853d0c45344e8  src/update_top_secoes.py
