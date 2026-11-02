@@ -48,6 +48,11 @@ bower_components
 # node-waf configuration
 .lock-wscript
 
+# Local Backups
+backup*/
+*.bak
+*_backup*/
+
 # Compiled binary addons (http://nodejs.org/api/addons.html)
 build/Release
 

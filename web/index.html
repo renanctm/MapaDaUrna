@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="color-scheme" content="light dark">
-  <title>Análise &amp; Auditoria das Eleições Presidenciais 2026 (TSE)</title>
+  <title>Mapa da Urna — Auditoria Censitária &amp; Análise Eleitoral 2026 (TSE)</title>
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="alternate icon" type="image/x-icon" href="favicon.ico">
   <!-- Google tag (gtag.js) - Google Analytics 4 -->
@@ -27,21 +27,38 @@
   <style>
     :root {
       color-scheme: light dark;
-      --bg: light-dark(#f8fafc, #0b0f19);
-      --surface: light-dark(#ffffff, #111827);
-      --surface-alt: light-dark(#f1f5f9, #1e293b);
-      --border: light-dark(#e2e8f0, #334155);
-      --text: light-dark(#0f172a, #f8fafc);
+      --bg: light-dark(#f8fafc, #0a0e17);
+      --surface: light-dark(#ffffff, #111624);
+      --surface-alt: light-dark(#f1f4f9, #171f33);
+      --surface-hover: light-dark(#e9eef6, #1d2842);
+      --border: light-dark(#dbe2ee, #24314c);
+      --border-focus: light-dark(#0284c7, #38bdf8);
+      --text: light-dark(#0f172a, #f1f5f9);
       --text-muted: light-dark(#475569, #94a3b8);
-      --lula: light-dark(#dc2626, #ef4444);
-      --lula-soft: light-dark(#fee2e2, rgba(239, 68, 68, 0.16));
-      --flavio: light-dark(#2563eb, #3b82f6);
-      --flavio-soft: light-dark(#dbeafe, rgba(59, 130, 246, 0.16));
+      --text-subtle: light-dark(#64748b, #64748b);
+      
+      --lula: light-dark(#c5221f, #f87171);
+      --lula-bg: light-dark(#fee2e2, rgba(248, 113, 113, 0.14));
+      --lula-border: light-dark(#fca5a5, rgba(248, 113, 113, 0.35));
+      
+      --flavio: light-dark(#1d4ed8, #60a5fa);
+      --flavio-bg: light-dark(#dbeafe, rgba(96, 165, 250, 0.14));
+      --flavio-border: light-dark(#93c5fd, rgba(96, 165, 250, 0.35));
+
+      --third-way: light-dark(#b45309, #fbbf24);
+      --third-way-bg: light-dark(#fef3c7, rgba(251, 191, 36, 0.14));
+
       --accent: light-dark(#0284c7, #38bdf8);
-      --warn-bg: light-dark(#fffbeb, rgba(245, 158, 11, 0.12));
-      --warn-border: light-dark(#f59e0b, #fbbf24);
-      --ok-bg: light-dark(#ecfdf5, rgba(16, 185, 129, 0.12));
-      --ok-border: light-dark(#10b981, #34d399);
+      --accent-soft: light-dark(#e0f2fe, rgba(56, 189, 248, 0.15));
+
+      --warn-bg: light-dark(#fffbeb, rgba(245, 158, 11, 0.1));
+      --warn-border: light-dark(#d97706, #fbbf24);
+      --ok-bg: light-dark(#ecfdf5, rgba(16, 185, 129, 0.1));
+      --ok-border: light-dark(#059669, #34d399);
+
+      --font-display: "Charter", "Bitstream Charter", "Sitka Text", Cambria, Georgia, serif;
+      --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      --font-mono: ui-monospace, "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
 
       &:has(> head > meta[name="color-scheme"][content="dark"]) {
         color-scheme: dark;
@@ -58,25 +75,35 @@
     }
 
     body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-family: var(--font-sans);
       background: var(--bg);
       color: var(--text);
       line-height: 1.55;
       padding-block-end: 4rem;
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
     }
 
+    /* Focus accessibility */
+    :focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    /* Header & Masthead */
     header {
       background: var(--surface);
       border-block-end: 1px solid var(--border);
       position: sticky;
       inset-block-start: 0;
-      z-index: 20;
-      padding: 1rem 1.5rem;
+      z-index: 30;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
     }
 
     .header-inner {
-      max-inline-size: 1320px;
+      max-inline-size: 1360px;
       margin-inline: auto;
+      padding: 0.9rem 1.5rem;
       display: flex;
       flex-wrap: wrap;
       justify-content: space-between;
@@ -86,154 +113,428 @@
 
     .brand {
       display: flex;
-      flex-direction: column;
-      gap: 0.15rem;
+      align-items: center;
+      gap: 0.85rem;
     }
 
-    .brand-badge {
-      display: inline-flex;
+    .brand-icon {
+      inline-size: 38px;
+      block-size: 38px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, var(--surface-alt), var(--border));
+      border: 1px solid var(--border);
+      display: flex;
       align-items: center;
-      gap: 0.4rem;
-      font-size: 0.75rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
+      justify-content: center;
+      flex-shrink: 0;
       color: var(--accent);
     }
 
-    h1 {
-      font-size: clamp(1.15rem, 2vw, 1.5rem);
+    .brand-text {
+      display: flex;
+      flex-direction: column;
+      gap: 0.1rem;
+    }
+
+    .brand-title {
+      font-family: var(--font-display);
+      font-size: 1.35rem;
       font-weight: 800;
       letter-spacing: -0.02em;
+      line-height: 1.2;
+      color: var(--text);
+    }
+
+    .brand-meta {
+      font-size: 0.76rem;
+      color: var(--text-muted);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .meta-tag {
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      padding: 0.1rem 0.45rem;
+      border-radius: 4px;
+      font-weight: 600;
+      font-size: 0.72rem;
     }
 
     .controls {
       display: flex;
       align-items: center;
-      gap: 0.75rem;
+      gap: 0.65rem;
       flex-wrap: wrap;
     }
 
-    .theme-btn {
+    .btn-action {
       background: var(--surface-alt);
       color: var(--text);
       border: 1px solid var(--border);
       padding: 0.45rem 0.85rem;
-      border-radius: 0.5rem;
-      font-size: 0.85rem;
+      border-radius: 6px;
+      font-size: 0.84rem;
       font-weight: 600;
       cursor: pointer;
-      transition: background 0.15s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      text-decoration: none;
+      max-inline-size: 100%;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+      transition: background 0.15s, border-color 0.15s, color 0.15s;
     }
 
-    .theme-btn:hover {
+    .btn-action:hover {
+      background: var(--surface-hover);
       border-color: var(--accent);
     }
 
     main {
-      max-inline-size: 1320px;
+      max-inline-size: 1360px;
       margin-inline: auto;
       padding: 1.5rem;
       display: flex;
       flex-direction: column;
-      gap: 1.75rem;
+      gap: 1.5rem;
     }
 
-    /* Placar e KPIs */
-    .kpi-grid {
-      display: grid;
-      grid-template-columns: repeat(5, minmax(0, 1fr));
-      gap: 1rem;
-      align-items: stretch;
-    }
-
-    @media (max-width: 1120px) {
-      .kpi-grid {
-        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      }
-    }
-
-    .card {
+    /* Placar Hero Editorial */
+    .hero-placar {
       background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: 0.75rem;
-      padding: 1.25rem;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+      border-radius: 12px;
+      padding: 1.5rem 1.75rem;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
     }
 
-    .kpi-grid > .card {
+    .hero-header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 0.75rem;
+      border-block-end: 1px solid var(--border);
+      padding-block-end: 0.85rem;
+    }
+
+    .hero-title {
+      font-family: var(--font-display);
+      font-size: 1.2rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+
+    .hero-status {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .status-dot {
+      inline-size: 8px;
+      block-size: 8px;
+      border-radius: 50%;
+      background: #10b981;
+      display: inline-block;
+    }
+
+    .candidates-matchup {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .candidate-card {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .candidate-card.lula {
+      text-align: start;
+    }
+
+    .candidate-card.flavio {
+      text-align: end;
+    }
+
+    .cand-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 0.76rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-block-end: 0.2rem;
+    }
+
+    .cand-badge.lula {
+      color: var(--lula);
+    }
+
+    .cand-badge.flavio {
+      color: var(--flavio);
+      justify-content: flex-end;
+    }
+
+    .cand-name {
+      font-family: var(--font-display);
+      font-size: clamp(1.35rem, 2.5vw, 1.85rem);
+      font-weight: 800;
+      line-height: 1.15;
+    }
+
+    .cand-pct {
+      font-size: clamp(1.85rem, 3.5vw, 2.75rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      font-variant-numeric: tabular-nums;
+      line-height: 1.05;
+    }
+
+    .cand-pct.lula {
+      color: var(--lula);
+    }
+
+    .cand-pct.flavio {
+      color: var(--flavio);
+    }
+
+    .cand-votes {
+      font-size: 0.92rem;
+      color: var(--text-muted);
+      font-variant-numeric: tabular-nums;
+      font-weight: 600;
+    }
+
+    .matchup-center {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 0 0.5rem;
+      min-inline-size: 140px;
+    }
+
+    .margin-pill {
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      padding: 0.35rem 0.75rem;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      white-space: nowrap;
+      color: var(--text);
+    }
+
+    .margin-diff {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-block-start: 0.35rem;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Proportional Bar with 50% majority marker */
+    .proportional-gauge {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .gauge-track {
+      position: relative;
+      block-size: 1rem;
+      background: var(--surface-alt);
+      border-radius: 6px;
+      overflow: hidden;
+      display: flex;
+      box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.06);
+    }
+
+    .gauge-fill-lula {
+      background: var(--lula);
+      block-size: 100%;
+      transition: inline-size 0.4s ease;
+    }
+
+    .gauge-fill-flavio {
+      background: var(--flavio);
+      block-size: 100%;
+      transition: inline-size 0.4s ease;
+    }
+
+    .gauge-threshold {
+      position: absolute;
+      inset-inline-start: 50%;
+      inset-block-start: 0;
+      inset-block-end: 0;
+      inline-size: 2px;
+      background: #ffffff;
+      box-shadow: 0 0 3px rgba(0, 0, 0, 0.6);
+      z-index: 2;
+    }
+
+    .gauge-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    /* Grid de Destaques Analíticos */
+    .insights-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1.15rem;
+    }
+
+    .insight-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.15rem 1.25rem;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      block-size: 100%;
+      gap: 0.75rem;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
     }
 
-    .kpi-label {
-      font-size: 0.76rem;
-      font-weight: 600;
+    .insight-header {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.78rem;
+      font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.04em;
       color: var(--text-muted);
-      margin-block-end: 0.35rem;
-      min-block-size: 2.35rem;
-      display: flex;
-      align-items: flex-start;
     }
 
-    .kpi-value {
-      font-size: clamp(1.15rem, 1.32vw, 1.38rem);
+    .insight-icon {
+      inline-size: 18px;
+      block-size: 18px;
+      color: var(--accent);
+      flex-shrink: 0;
+    }
+
+    .insight-value {
+      font-size: 1.55rem;
       font-weight: 800;
-      letter-spacing: -0.03em;
-      white-space: nowrap;
+      letter-spacing: -0.02em;
       font-variant-numeric: tabular-nums;
-      line-height: 1.2;
+      line-height: 1.15;
     }
 
-    .kpi-sub {
-      font-size: 0.8rem;
+    .insight-desc {
+      font-size: 0.83rem;
       color: var(--text-muted);
-      margin-block-start: 0.4rem;
-      flex: 1;
+      line-height: 1.45;
     }
 
-    .bar-dual {
-      block-size: 0.55rem;
-      border-radius: 999px;
-      overflow: hidden;
-      display: flex;
-      margin-block-start: 0.75rem;
-      background: var(--surface-alt);
+    .insight-desc strong {
+      color: var(--text);
     }
 
-    .bar-lula { background: var(--lula); }
-    .bar-flavio { background: var(--flavio); }
-
-    /* Navegação por Abas */
-    .tabs {
+    /* Banner de Transparência e Governança */
+    .governance-banner {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-inline-start: 4px solid var(--accent);
+      border-radius: 8px;
+      padding: 0.95rem 1.25rem;
       display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.85rem;
+      font-size: 0.84rem;
+      color: var(--text-muted);
+    }
+
+    .governance-text {
+      flex: 1 1 600px;
+      line-height: 1.5;
+    }
+
+    .governance-text strong {
+      color: var(--text);
+    }
+
+    .governance-links {
+      display: flex;
+      flex-wrap: wrap;
       gap: 0.5rem;
-      border-block-end: 1px solid var(--border);
-      padding-block-end: 0.5rem;
+      align-items: center;
+    }
+
+    /* Segmented Navigation Tabs */
+    .tabs-nav {
+      display: flex;
+      gap: 0.4rem;
+      background: var(--surface-alt);
+      padding: 0.35rem;
+      border-radius: 10px;
+      border: 1px solid var(--border);
       overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
     }
 
     .tab-btn {
       background: transparent;
       color: var(--text-muted);
-      border: 1px solid transparent;
-      padding: 0.55rem 1rem;
-      border-radius: 0.5rem;
-      font-size: 0.9rem;
+      border: none;
+      padding: 0.65rem 1.1rem;
+      border-radius: 7px;
+      font-size: 0.88rem;
       font-weight: 600;
       cursor: pointer;
       white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: background 0.15s, color 0.15s, box-shadow 0.15s;
+    }
+
+    .tab-btn:hover {
+      color: var(--text);
+      background: var(--surface-hover);
     }
 
     .tab-btn[aria-selected="true"] {
       background: var(--surface);
       color: var(--accent);
-      border-color: var(--border);
-      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+      font-weight: 700;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    }
+
+    .tab-badge {
+      font-size: 0.72rem;
+      background: var(--surface-alt);
+      padding: 0.1rem 0.4rem;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .tab-btn[aria-selected="true"] .tab-badge {
+      background: var(--accent-soft);
+      border-color: var(--accent);
     }
 
     .tab-panel {
@@ -246,24 +547,53 @@
       display: flex;
     }
 
+    /* Cartões de Conteúdo e Gráficos */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 460px), 1fr));
+      gap: 1.35rem;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.35rem;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+    }
+
+    .card-header {
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+
     .section-title {
-      font-size: 1.2rem;
+      font-family: var(--font-display);
+      font-size: 1.15rem;
       font-weight: 700;
-      margin-block-end: 0.35rem;
+      letter-spacing: -0.01em;
+      color: var(--text);
     }
 
     .section-desc {
-      font-size: 0.92rem;
+      font-size: 0.86rem;
       color: var(--text-muted);
-      margin-block-end: 1rem;
+      line-height: 1.45;
+      max-inline-size: 78ch;
     }
 
+    /* Callouts editoriais */
     .callout {
-      padding: 1rem 1.25rem;
-      border-radius: 0.65rem;
-      border-inline-start: 4px solid var(--warn-border);
-      background: var(--warn-bg);
-      font-size: 0.9rem;
+      padding: 0.95rem 1.25rem;
+      border-radius: 8px;
+      border-inline-start: 4px solid var(--accent);
+      background: var(--surface-alt);
+      font-size: 0.88rem;
+      line-height: 1.5;
     }
 
     .callout.ok {
@@ -271,17 +601,16 @@
       background: var(--ok-bg);
     }
 
-    .callout > strong:first-child {
-      display: block;
-      margin-block-end: 0.25rem;
+    .callout.warn {
+      border-inline-start-color: var(--warn-border);
+      background: var(--warn-bg);
     }
 
-    .grid-2 {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(min(100%, 380px), 1fr));
-      gap: 1.25rem;
+    .callout strong {
+      color: var(--text);
     }
 
+    /* Barras de Estatística com 50% threshold */
     .stat-row {
       display: flex;
       justify-content: space-between;
@@ -290,101 +619,110 @@
       gap: 0.25rem 0.75rem;
     }
 
-    /* Tabelas Responsivas seguindo modern-web-guidance (responsive-table) */
-    .table-wrapper {
-      overflow: auto;
-      max-inline-size: 100%;
-      max-block-size: min(560px, 80vh);
-      container-type: inline-size;
+    .bar-dual {
+      position: relative;
+      block-size: 0.65rem;
+      border-radius: 999px;
+      overflow: hidden;
+      display: flex;
+      background: var(--surface-alt);
+      margin-block-start: 0.45rem;
       border: 1px solid var(--border);
-      border-radius: 0.65rem;
-      background: var(--surface);
-      -webkit-overflow-scrolling: touch;
     }
 
-    table {
-      inline-size: 100%;
-      border-collapse: separate;
-      border-spacing: 0;
-      font-size: 0.88rem;
-    }
-
-    caption {
-      text-align: start;
-      padding: 0.85rem 1rem;
-      font-weight: 700;
-      font-size: 0.95rem;
-      background: var(--surface-alt);
-      border-block-end: 1px solid var(--border);
-    }
-
-    thead {
-      position: sticky;
+    .bar-dual::after {
+      content: "";
+      position: absolute;
+      inset-inline-start: 50%;
       inset-block-start: 0;
+      inset-block-end: 0;
+      inline-size: 1px;
+      background: var(--text);
+      opacity: 0.35;
       z-index: 2;
-      background: var(--surface-alt);
     }
 
-    th, td {
-      padding: 0.65rem 0.9rem;
-      text-align: start;
-      border-block-end: 1px solid var(--border);
-      white-space: nowrap;
-    }
+    .bar-lula { background: var(--lula); block-size: 100%; }
+    .bar-flavio { background: var(--flavio); block-size: 100%; }
 
-    th.num, td.num {
-      text-align: end;
+    /* Barra de Dispersão / Whisker Plot para IC 95% */
+    .whisker-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.74rem;
+      color: var(--text-muted);
       font-variant-numeric: tabular-nums;
     }
 
-    tbody th {
-      position: sticky;
-      inset-inline-start: 0;
-      z-index: 1;
-      background: var(--surface);
-      font-weight: 600;
-    }
-
-    tbody tr:hover td, tbody tr:hover th {
+    .whisker-track {
+      position: relative;
+      flex: 1;
+      block-size: 6px;
       background: var(--surface-alt);
+      border-radius: 999px;
+      border: 1px solid var(--border);
     }
 
+    .whisker-range {
+      position: absolute;
+      block-size: 100%;
+      background: var(--accent-soft);
+      border-radius: 999px;
+    }
+
+    .whisker-point {
+      position: absolute;
+      inline-size: 8px;
+      block-size: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+      inset-block-start: -2px;
+      transform: translateX(-50%);
+    }
+
+    /* Pílulas de Candidato */
     .pill-lula {
-      background: var(--lula-soft);
+      background: var(--lula-bg);
       color: var(--lula);
-      padding: 0.15rem 0.45rem;
-      border-radius: 0.35rem;
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
       font-weight: 700;
+      border: 1px solid var(--lula-border);
+      font-variant-numeric: tabular-nums;
     }
 
     .pill-flavio {
-      background: var(--flavio-soft);
+      background: var(--flavio-bg);
       color: var(--flavio);
-      padding: 0.15rem 0.45rem;
-      border-radius: 0.35rem;
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
       font-weight: 700;
+      border: 1px solid var(--flavio-border);
+      font-variant-numeric: tabular-nums;
     }
 
     .pill-ok {
       background: var(--ok-bg);
       color: var(--ok-border);
-      padding: 0.15rem 0.45rem;
-      border-radius: 0.35rem;
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
       font-weight: 700;
-      font-size: 0.76rem;
+      font-size: 0.74rem;
+      border: 1px solid rgba(16, 185, 129, 0.25);
       white-space: nowrap;
     }
 
     .pill-script {
       display: inline-flex;
       align-items: center;
-      gap: 0.35rem;
+      gap: 0.4rem;
       background: var(--surface-alt);
       border: 1px solid var(--border);
       color: var(--accent);
-      padding: 0.3rem 0.65rem;
-      border-radius: 0.4rem;
-      font-family: monospace;
+      padding: 0.35rem 0.75rem;
+      border-radius: 6px;
+      font-family: var(--font-mono);
       font-size: 0.8rem;
       text-decoration: none;
       font-weight: 600;
@@ -399,11 +737,12 @@
       background: var(--surface);
     }
 
+    /* Barra de Filtros e Busca */
     .filter-bar {
       display: flex;
-      gap: 0.75rem;
+      gap: 0.65rem;
       flex-wrap: wrap;
-      margin-block-end: 1rem;
+      align-items: center;
     }
 
     .filter-input, .filter-select {
@@ -411,191 +750,517 @@
       color: var(--text);
       border: 1px solid var(--border);
       padding: 0.5rem 0.85rem;
-      border-radius: 0.5rem;
-      font-size: 0.9rem;
+      border-radius: 6px;
+      font-size: 0.88rem;
       max-inline-size: 100%;
       min-inline-size: 0;
-      text-overflow: ellipsis;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+
+    .filter-input:focus, .filter-select:focus {
+      border-color: var(--accent);
+      outline: none;
+      box-shadow: 0 0 0 3px var(--accent-soft);
     }
 
     .filter-input {
-      flex: 1 1 220px;
+      flex: 1 1 240px;
     }
 
     .filter-select {
       flex: 0 1 auto;
     }
 
+    .search-feedback {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      font-weight: 600;
+      margin-inline-start: auto;
+    }
+
+    /* Tabelas Responsivas de Padrão Editorial */
+    .table-wrapper {
+      overflow: auto;
+      max-inline-size: 100%;
+      max-block-size: min(580px, 80vh);
+      container-type: inline-size;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--surface);
+      -webkit-overflow-scrolling: touch;
+      box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.02);
+    }
+
+    table {
+      inline-size: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      font-size: 0.86rem;
+    }
+
+    caption {
+      text-align: start;
+      padding: 0.75rem 1rem;
+      font-weight: 700;
+      font-size: 0.9rem;
+      background: var(--surface-alt);
+      border-block-end: 1px solid var(--border);
+      color: var(--text);
+    }
+
+    thead {
+      position: sticky;
+      inset-block-start: 0;
+      z-index: 2;
+      background: var(--surface-alt);
+    }
+
+    th, td {
+      padding: 0.65rem 0.85rem;
+      text-align: start;
+      border-block-end: 1px solid var(--border);
+      white-space: nowrap;
+    }
+
+    th {
+      font-weight: 700;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      color: var(--text-muted);
+    }
+
+    th.num, td.num {
+      text-align: end;
+      font-variant-numeric: tabular-nums lining-nums;
+    }
+
+    /* Colunas com distinção sutil de candidato */
+    th.col-lula {
+      color: var(--lula);
+    }
+
+    th.col-flavio {
+      color: var(--flavio);
+    }
+
+    tbody th {
+      position: sticky;
+      inset-inline-start: 0;
+      z-index: 1;
+      background: var(--surface);
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    tbody tr:hover td, tbody tr:hover th {
+      background: var(--surface-hover);
+    }
+
+    /* Estado Vazio de Busca */
+    .empty-state {
+      padding: 2.5rem 1.5rem;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.92rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* Documentação Metodológica (Aba 3) */
+    .doc-article {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      max-inline-size: 85ch;
+    }
+
+    .doc-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.5rem 1.75rem;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+    }
+
+    .doc-title {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      font-weight: 800;
+      margin-block-end: 0.5rem;
+      color: var(--text);
+    }
+
+    .doc-p {
+      font-size: 0.92rem;
+      line-height: 1.65;
+      color: var(--text-muted);
+      margin-block-end: 1rem;
+    }
+
+    .doc-p strong {
+      color: var(--text);
+    }
+
+    .doc-list {
+      padding-inline-start: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: var(--text-muted);
+    }
+
+    .doc-list strong {
+      color: var(--text);
+    }
+
+    .formula-box {
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      border-inline-start: 3px solid var(--accent);
+      border-radius: 6px;
+      padding: 0.85rem 1.15rem;
+      margin: 0.75rem 0;
+      font-family: var(--font-mono);
+      font-size: 0.88rem;
+      overflow-x: auto;
+      color: var(--text);
+    }
+
+    /* Certificado Criptográfico */
+    .crypto-certificate {
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+    }
+
+    .crypto-row {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      word-break: break-all;
+    }
+
+    .crypto-label {
+      font-weight: 700;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .crypto-hash {
+      color: var(--accent);
+      background: var(--surface);
+      padding: 0.3rem 0.5rem;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+    }
+
+    code {
+      font-family: var(--font-mono);
+      font-size: 0.85em;
+      background: var(--surface-alt);
+      padding: 0.15rem 0.35rem;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+    }
+
+    @media (max-width: 960px) {
+      .insights-grid {
+        grid-template-columns: 1fr;
+      }
+      .candidates-matchup {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+      .candidate-card.flavio {
+        text-align: start;
+      }
+      .cand-badge.flavio {
+        justify-content: flex-start;
+      }
+      .matchup-center {
+        padding: 0.5rem 0;
+        border-block: 1px solid var(--border);
+        flex-direction: row;
+        justify-content: space-between;
+      }
+    }
+
     @media (max-width: 640px) {
-      header {
-        position: static;
-        padding: 0.85rem 1rem;
+      .header-inner {
+        padding: 0.75rem 1rem;
       }
       main {
         padding: 1rem 0.85rem;
-        gap: 1.25rem;
+        gap: 1.2rem;
       }
-      .card {
-        padding: 1rem;
+      .hero-placar {
+        padding: 1.15rem;
       }
-      .kpi-grid {
-        grid-template-columns: 1fr;
-        gap: 0.75rem;
-      }
-      .kpi-label {
-        min-block-size: auto;
-      }
-      .kpi-value {
+      .cand-name {
         font-size: 1.35rem;
       }
-      .section-title {
-        font-size: 1.05rem;
+      .cand-pct {
+        font-size: 2rem;
+      }
+      .tabs-nav {
+        padding: 0.25rem;
+      }
+      .tab-btn {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.8rem;
       }
       .filter-input, .filter-select {
         inline-size: 100%;
         flex: 1 1 100%;
-        font-size: 0.84rem;
       }
       th, td {
         padding: 0.5rem 0.65rem;
-        font-size: 0.8rem;
-      }
-      tbody th {
-        position: static;
+        font-size: 0.78rem;
       }
       caption {
-        padding: 0.7rem 0.85rem;
-        font-size: 0.86rem;
+        padding: 0.65rem 0.8rem;
+        font-size: 0.84rem;
+      }
+      .doc-section {
+        padding: 1.15rem 1rem;
       }
     }
 
-    .svg-chart {
-      inline-size: 100%;
-      block-size: auto;
-      display: block;
-      margin-block-start: 0.5rem;
-    }
-
-    code {
-      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-      font-size: 0.84em;
-      background: var(--surface-alt);
-      padding: 0.15rem 0.35rem;
-      border-radius: 0.25rem;
+    @media (prefers-reduced-motion: reduce) {
+      *, ::before, ::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
     }
   </style>
 </head>
 <body>
+  <!-- Header & Observatório -->
   <header>
     <div class="header-inner">
       <div class="brand">
-        <span class="brand-badge">Painel de Análise &amp; Auditoria de Dados Eleitorais • TSE 2026</span>
-        <h1>Eleições Presidenciais 2026 — Análise de Resultados, Turnos e Seções Eleitorais</h1>
+        <div class="brand-icon" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="4" width="18" height="16" rx="2"></rect>
+            <line x1="7" y1="9" x2="17" y2="9"></line>
+            <polyline points="7 14 10 17 17 10"></polyline>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <h1 class="brand-title">Mapa da Urna</h1>
+          <div class="brand-meta">
+            <span>Eleições Presidenciais 2026</span>
+            <span>&bull;</span>
+            <span>Censo TSE Oficial</span>
+            <span class="meta-tag">499.206 Urnas</span>
+            <span class="meta-tag">Corte: 26/10 às 18:30 BRT</span>
+          </div>
+        </div>
       </div>
       <div class="controls">
-        <a href="https://github.com/renanctm/MapaDaUrna" target="_blank" rel="noopener noreferrer" class="theme-btn" style="text-decoration:none;display:inline-flex;align-items:center;gap:0.4rem;">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
-          Código Aberto (GitHub)
+        <a href="https://github.com/renanctm/MapaDaUrna" target="_blank" rel="noopener noreferrer" class="btn-action">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+          </svg>
+          GitHub
         </a>
-        <button id="theme-toggle" class="theme-btn" type="button" aria-label="Alternar tema claro ou escuro">
-          Alternar Tema
+        <button id="theme-toggle" class="btn-action" type="button" aria-label="Alternar tema visual claro ou escuro">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+          Tema
         </button>
       </div>
     </div>
   </header>
 
   <main>
-    <!-- KPIs Gerais da Eleição -->
-    <section class="kpi-grid" aria-label="Indicadores Principais do Pleito">
-      <div class="card">
-        <div class="kpi-label">Placar Oficial 2º Turno (100% Seções)</div>
-        <div class="kpi-value">51,79% × 48,21%</div>
-        <div class="kpi-sub">Lula: 64.256.232 | Flávio: 59.826.041 (Dif: 4.430.191)</div>
-        <div class="bar-dual">
-          <div class="bar-lula" style="width: 51.79%"></div>
-          <div class="bar-flavio" style="width: 48.21%"></div>
+    <!-- HERO: Placar Oficial & Balanço Consolidado -->
+    <section class="hero-placar" aria-label="Placar Oficial e Balanço Nacional">
+      <div class="hero-header">
+        <h2 class="hero-title">Resultado Oficial do 2º Turno Presidencial (25/10/2026)</h2>
+        <div class="hero-status">
+          <span class="status-dot"></span>
+          100% das seções totalizadas (499.206 urnas apuradas no Brasil e Exterior)
         </div>
       </div>
 
-      <div class="card">
-        <div class="kpi-label">Placar Oficial 1º Turno (04/10/2026)</div>
-        <div class="kpi-value">46,93% × 45,07%</div>
-        <div class="kpi-sub">Flávio: 56.104.503 | Lula: 53.879.538 | 3ª Via: 9.292.190 (8,00%)</div>
-        <div class="bar-dual">
-          <div class="bar-lula" style="width: 45.07%"></div>
-          <div class="bar-flavio" style="width: 46.93%"></div>
+      <div class="candidates-matchup">
+        <!-- Lula -->
+        <div class="candidate-card lula">
+          <span class="cand-badge lula">&#10003; Eleito Presidente</span>
+          <div class="cand-name">Luiz Inácio Lula da Silva</div>
+          <div class="cand-pct lula">51,79%</div>
+          <div class="cand-votes">64.256.232 votos válidos</div>
+        </div>
+
+        <!-- Centro: Margem e Diferença -->
+        <div class="matchup-center">
+          <span class="margin-pill">Diferença: +4.430.191</span>
+          <span class="margin-diff">+3,58 pontos percentuais</span>
+        </div>
+
+        <!-- Flávio -->
+        <div class="candidate-card flavio">
+          <span class="cand-badge flavio">2º Colocado</span>
+          <div class="cand-name">Flávio Bolsonaro</div>
+          <div class="cand-pct flavio">48,21%</div>
+          <div class="cand-votes">59.826.041 votos válidos</div>
         </div>
       </div>
 
-      <div class="card">
-        <div class="kpi-label">Crescimento Líquido (1ºT → 2ºT)</div>
-        <div class="kpi-value">+10,38M × +3,72M</div>
-        <div class="kpi-sub">Lula: <strong>+10.376.694 (+19,26%)</strong> | Flávio: <strong>+3.721.538 (+6,63%)</strong></div>
-        <div class="bar-dual">
-          <div class="bar-lula" style="width: 73.60%"></div>
-          <div class="bar-flavio" style="width: 26.40%"></div>
+      <!-- Barra de Balanço Proporcional com Linha de 50% -->
+      <div class="proportional-gauge">
+        <div class="gauge-track">
+          <div class="gauge-fill-lula" style="inline-size: 51.79%;" title="Lula: 51,79%"></div>
+          <div class="gauge-fill-flavio" style="inline-size: 48.21%;" title="Flávio: 48,21%"></div>
+          <div class="gauge-threshold" title="Linha de maioria (50%)"></div>
         </div>
-      </div>
-
-      <div class="card">
-        <div class="kpi-label">Comparecimento &amp; Votos Válidos (2ºT)</div>
-        <div class="kpi-value">128,24M <span style="font-size:0.95rem;font-weight:700;color:var(--text-muted)">(+2,36%)</span></div>
-        <div class="kpi-sub"><strong>+2.960.241</strong> eleitores a mais no 2ºT • Queda de <strong>1.816.000</strong> brancos/nulos</div>
-        <div class="bar-dual">
-          <div style="background:var(--accent);width: 96.76%"></div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="kpi-label">Viradas de Seções no 2º Turno</div>
-        <div class="kpi-value">31.425 <span style="font-size:0.95rem;font-weight:700;color:var(--text-muted)">(6,30%)</span></div>
-        <div class="kpi-sub">Urnas que viraram para Lula (contra <strong>564</strong> p/ Flávio) • Lula cresceu mais em <strong>85,2%</strong></div>
-        <div class="bar-dual">
-          <div class="bar-lula" style="width: 85.18%"></div>
-          <div class="bar-flavio" style="width: 14.82%"></div>
+        <div class="gauge-labels">
+          <span>Lula: 51,79% (64,26M)</span>
+          <span style="font-weight:700;">Maioria (50,00%)</span>
+          <span>Flávio: 48,21% (59,83M)</span>
         </div>
       </div>
     </section>
 
-    <!-- Disclaimer de Governança, Corte Temporal e Transparência Científica -->
-    <div class="callout" style="border-inline-start-color: var(--accent); background: var(--surface-alt); font-size: 0.86rem;">
-      <strong style="color: var(--accent);">Transparência, Governança &amp; Reprodutibilidade Científica:</strong>
-      Plataforma de auditoria e análise eleitoral baseada no censo oficial das <strong>499.206 seções eleitorais</strong> (Brasil + Exterior) extraídas do Repositório de Dados Abertos do Tribunal Superior Eleitoral (TSE) com corte temporal de totalização em <strong>26/10/2026 às 18:30 BRT</strong>. As estimativas de transferência utilizam inferência ecológica regularizada ao suporte físico <code>[0%, 100%]</code> com fechamento contábil estrito e estratificação microterritorial (UF × Capital vs. Interior). Código-fonte aberto e manifesto criptográfico público disponível no <a href="hashes.txt" target="_blank" rel="noopener noreferrer" style="color: var(--accent); font-weight: 700; text-decoration: underline;">Manifesto de Hashes SHA-256 (hashes.txt)</a> e na Aba 3.
+    <!-- Grid de Destaques Analíticos Fundamentais -->
+    <section class="insights-grid" aria-label="Três Fenômenos Determinantes">
+      <!-- 1. Origem da Vitória -->
+      <div class="insight-card">
+        <div class="insight-header">
+          <svg class="insight-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+            <polyline points="17 6 23 6 23 12"></polyline>
+          </svg>
+          Dinâmica do Crescimento Líquido
+        </div>
+        <div class="insight-value">+10,38M vs +3,72M</div>
+        <div class="insight-desc">
+          Lula cresceu <strong>+10.376.694 votos (+19,26%)</strong> contra <strong>+3.721.538 de Flávio (+6,63%)</strong>, capturando <strong>73,6%</strong> de toda a expansão de votos válidos entre o 1º e o 2º turno.
+        </div>
+      </div>
+
+      <!-- 2. Mobilidade das Urnas -->
+      <div class="insight-card">
+        <div class="insight-header">
+          <svg class="insight-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M16 3h5v5"></path>
+            <path d="M4 20L21 3"></path>
+            <path d="M21 16v5h-5"></path>
+            <path d="M15 15l6 6"></path>
+            <path d="M4 4l5 5"></path>
+          </svg>
+          Viradas de Liderança nas Urnas
+        </div>
+        <div class="insight-value">31.425 urnas</div>
+        <div class="insight-desc">
+          <strong>6,30% das urnas</strong> do país viraram de lado para Lula no 2º turno (contra apenas <strong>564</strong> para Flávio). Lula superou o crescimento de Flávio em <strong>85,2%</strong> de todas as seções eleitorais.
+        </div>
+      </div>
+
+      <!-- 3. Desfecho das Prorrogações -->
+      <div class="insight-card">
+        <div class="insight-header">
+          <svg class="insight-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+          Urnas Prorrogadas (>17h45)
+        </div>
+        <div class="insight-value">5.052 votos</div>
+        <div class="insight-desc">
+          Das 7.352 urnas abertas até as 19h, <strong>54,5% fecharam sem receber eleitores</strong>. Nas seções com voto pós-17h, o total foi de 5.052 votos tardios (<strong>0,004%</strong> do total nacional).
+        </div>
+      </div>
+    </section>
+
+    <!-- Banner de Governança, Reprodutibilidade e Integridade -->
+    <div class="governance-banner">
+      <div class="governance-text">
+        <strong>Governança, Reprodutibilidade Aberta &amp; Auditoria Censitária:</strong>
+        Dados oficiais extraídos do Repositório de Dados Abertos do TSE com corte de totalização em <strong>26/10/2026 às 18:30 BRT</strong>. A decomposição de votos utiliza inferência ecológica regularizada em 55 estratos microterritoriais independentes com bandas de credibilidade de 95%.
+      </div>
+      <div class="governance-links">
+        <a href="hashes.txt" target="_blank" rel="noopener noreferrer" class="btn-action">
+          🔐 Manifesto SHA-256 (hashes.txt)
+        </a>
+        <a href="https://github.com/renanctm/MapaDaUrna" target="_blank" rel="noopener noreferrer" class="btn-action">
+          📦 Repositório GitHub
+        </a>
+      </div>
     </div>
 
-    <!-- Abas de Navegação -->
-    <nav class="tabs" role="tablist" aria-label="Módulos de Análise Eleitoral">
-      <button class="tab-btn" role="tab" aria-selected="true" data-tab="tab-t1-t2">1. Comparativo 1º vs. 2º Turno (Por Urna)</button>
-      <button class="tab-btn" role="tab" aria-selected="false" data-tab="tab-encerramento">2. Encerramento, Prorrogação 19h &amp; Explorador UF/Município</button>
-      <button class="tab-btn" role="tab" aria-selected="false" data-tab="tab-auditoria">3. Racional Metodológico &amp; Guia do Painel</button>
+    <!-- Navegação por Abas Segmentadas -->
+    <nav class="tabs-nav" role="tablist" aria-label="Módulos de Análise Eleitoral">
+      <button class="tab-btn" role="tab" aria-selected="true" data-tab="tab-t1-t2">
+        1. Comparativo 1º vs. 2º Turno
+        <span class="tab-badge">Urna a Urna</span>
+      </button>
+      <button class="tab-btn" role="tab" aria-selected="false" data-tab="tab-encerramento">
+        2. Horário de Fechamento &amp; Prorrogação 19h
+        <span class="tab-badge">Cronologia</span>
+      </button>
+      <button class="tab-btn" role="tab" aria-selected="false" data-tab="tab-auditoria">
+        3. Racional Metodológico &amp; Auditoria
+        <span class="tab-badge">Método</span>
+      </button>
     </nav>
 
     <!-- ABA 1: COMPARATIVO 1º VS 2º TURNO POR URNA (GERAL DA ELEIÇÃO) -->
     <section id="tab-t1-t2" class="tab-panel active" role="tabpanel">
       <div class="callout ok">
-        <strong>Censo Oficial do 1º Turno (04/10/2026) × 2º Turno (25/10/2026) nas 499.206 Seções Eleitorais:</strong>
-        Cruzamento integral seção por seção dos dados oficiais do TSE (Brasil + Exterior). No 1º turno, Flávio Bolsonaro obteve <strong>56.104.503 votos (46,93%)</strong>, Lula obteve <strong>53.879.538 (45,07%)</strong> e os candidatos da 3ª Via (Augusto Cury, Renan Santos, Ronaldo Caiado, Romeu Zema e outros) somaram <strong>9.292.190 votos (8,00%)</strong>. No 2º turno, Lula cresceu <strong>+10.376.694 votos (+19,26%)</strong> contra <strong>+3.721.538 de Flávio (+6,63%)</strong>, impulsionado pela migração da 3ª via, pela redução de <strong>1.816.000 votos brancos/nulos</strong> e pelo aumento de <strong>2.960.241 comparecentes</strong>.
+        <strong>Censo Oficial do 1º Turno (04/10/2026) &times; 2º Turno (25/10/2026) nas 499.206 Seções Eleitorais:</strong>
+        Cruzamento integral seção por seção dos dados oficiais do TSE. No 1º turno, Flávio Bolsonaro obteve <strong>56.104.503 votos (46,93%)</strong>, Lula obteve <strong>53.879.538 (45,07%)</strong> e a 3ª Via somou <strong>9.292.190 votos (8,00%)</strong>. No 2º turno, Lula cresceu <strong>+10.376.694 votos (+19,26%)</strong> contra <strong>+3.721.538 de Flávio (+6,63%)</strong>, impulsionado pela migração da 3ª via, pela redução de <strong>1.816.000 brancos/nulos</strong> e pelo aumento de <strong>2.960.241 comparecentes</strong>.
       </div>
 
       <div class="grid-2">
         <div class="card">
-          <h2 class="section-title">Transição de Liderança por Seção Eleitoral (1ºT → 2ºT)</h2>
-          <p class="section-desc">Comportamento da maioria em cada uma das 499.206 seções eleitorais entre o 1º e o 2º turno (Brasil + Exterior):</p>
+          <div class="card-header">
+            <h3 class="section-title">Transição de Liderança por Seção Eleitoral (1ºT &rarr; 2ºT)</h3>
+            <p class="section-desc">Comportamento da maioria em cada uma das 499.206 seções eleitorais entre o 1º e o 2º turno:</p>
+          </div>
           <div id="chart-flips-summary"></div>
         </div>
 
         <div class="card">
-          <h2 class="section-title">Migração e Crescimento por Região (1ºT → 2ºT)</h2>
-          <p class="section-desc">Evolução do placar e proporção do crescimento líquido capturada por candidato em cada região:</p>
+          <div class="card-header">
+            <h3 class="section-title">Migração e Crescimento por Região (1ºT &rarr; 2ºT)</h3>
+            <p class="section-desc">Evolução do placar e proporção do crescimento líquido capturada por candidato em cada macrorregião:</p>
+          </div>
           <div id="chart-t1-t2-regions"></div>
         </div>
       </div>
 
       <div class="grid-2">
         <div class="card">
-          <h2 class="section-title">Decomposição Ecológica Microterritorial (UF × Capital vs. Interior)</h2>
-          <p class="section-desc">Estimativa por inferência ecológica restrita ao intervalo [0%, 100%] (Mínimos Quadrados Não-Negativos / King com fechamento contábil exato e bandas de credibilidade de 95%):</p>
-          <div class="filter-bar" style="margin-block-end: 0.65rem;">
+          <div class="card-header">
+            <h3 class="section-title">Decomposição Ecológica Microterritorial (UF &times; Capital vs. Interior)</h3>
+            <p class="section-desc">Estimativa por inferência ecológica restrita ao suporte físico [0%, 100%] com fechamento contábil e intervalos de credibilidade de 95%:</p>
+          </div>
+          <div class="filter-bar">
             <select id="eco-uf-select" class="filter-select" aria-label="Selecione a Unidade da Federação">
               <option value="BR">Brasil (Total Nacional)</option>
               <option value="AC">AC - Acre</option>
@@ -633,21 +1298,24 @@
               <option value="interior">Apenas Interior</option>
             </select>
           </div>
-          <div class="callout" style="font-size:0.79rem;padding:0.55rem 0.8rem;margin-block-end:0.65rem;border-inline-start-color:var(--warn-border);background:var(--warn-bg);">
-            <strong style="color:var(--text);">Nota Metodológica sobre Indeterminação Residual em Extremos:</strong>
-            Em recortes territoriais ou estratos com contingente muito reduzido de determinados candidatos (ex.: menos de 1.000 votos na UF), as bandas de credibilidade (IC 95%) tornam-se naturalmente mais amplas em decorrência da variância amostral reduzida, refletindo a incerteza estatística inerente aos dados agregados.
+          <div class="callout warn" style="font-size:0.8rem;padding:0.6rem 0.85rem;">
+            <strong>Nota Metodológica sobre Indeterminação Residual em Extremos:</strong>
+            Em recortes com contingente reduzido de determinados candidatos (ex.: menos de 1.000 votos na UF), as bandas de credibilidade (IC 95%) tornam-se naturalmente mais amplas em decorrência da variância amostral, refletindo a incerteza estatística inerente aos dados agregados.
           </div>
-          <div id="eco-slice-meta" style="font-size:0.82rem;line-height:1.45;color:var(--text-muted);margin-block-end:0.65rem;padding:0.45rem 0.65rem;border-radius:0.4rem;background:var(--surface-alt);border:1px solid var(--border);"></div>
+          <div id="eco-slice-meta" style="font-size:0.83rem;line-height:1.45;color:var(--text-muted);padding:0.5rem 0.75rem;border-radius:6px;background:var(--surface-alt);border:1px solid var(--border);"></div>
           <div id="chart-eco-decomp"></div>
         </div>
 
         <div class="card">
-          <h2 class="section-title">Desempenho por Líder da 3ª Via na Seção Eleitoral</h2>
-          <p class="section-desc">Comportamento real no 2º turno nas urnas onde Augusto Cury (70), Renan Santos (14), Ronaldo Caiado (55) ou Romeu Zema (30) tiveram votação expressiva no 1º turno:</p>
+          <div class="card-header">
+            <h3 class="section-title">Desempenho por Líder da 3ª Via na Seção Eleitoral</h3>
+            <p class="section-desc">Comportamento real no 2º turno nas seções onde candidatos da 3ª via obtiveram votação expressiva no 1º turno:</p>
+          </div>
           <div id="chart-3v-leaders"></div>
         </div>
       </div>
 
+      <!-- Tabela 1: Faixas Flávio -->
       <div tabindex="0" role="region" aria-labelledby="cap-flavio-bands" class="table-wrapper">
         <table id="tbl-flavio-bands">
           <caption id="cap-flavio-bands">Comportamento da Abstenção e Migração de Votos por Predominância de Flávio Bolsonaro no 1º Turno</caption>
@@ -657,11 +1325,11 @@
               <th class="num">Seções</th>
               <th class="num">1ºT % Flávio</th>
               <th class="num">1ºT % 3ª Via</th>
-              <th class="num">Δ Comparecimento</th>
+              <th class="num">&Delta; Comparecimento</th>
               <th class="num">Urnas c/ +Abstenção</th>
-              <th class="num">Urnas Flávio Caiu (Δ22&lt;0)</th>
-              <th class="num">Δ Lula (2ºT−1ºT)</th>
-              <th class="num">Δ Flávio (2ºT−1ºT)</th>
+              <th class="num">Urnas Flávio Caiu (&Delta;22&lt;0)</th>
+              <th class="num col-lula">&Delta; Lula (2ºT&minus;1ºT)</th>
+              <th class="num col-flavio">&Delta; Flávio (2ºT&minus;1ºT)</th>
               <th class="num">Divisão do Crescimento</th>
             </tr>
           </thead>
@@ -669,6 +1337,7 @@
         </table>
       </div>
 
+      <!-- Tabela 2: Faixas 3ª Via -->
       <div tabindex="0" role="region" aria-labelledby="cap-3v-bands" class="table-wrapper">
         <table id="tbl-3v-bands">
           <caption id="cap-3v-bands">Comportamento das Urnas por Força da 3ª Via no 1º Turno (% Votos Válidos 1ºT)</caption>
@@ -676,12 +1345,12 @@
             <tr>
               <th>Faixa % 3ª Via no 1º Turno</th>
               <th class="num">Seções</th>
-              <th class="num">1ºT Lula × Flávio</th>
+              <th class="num">1ºT Lula &times; Flávio</th>
               <th class="num">Volume 3ª Via (1ºT)</th>
-              <th class="num">Δ Comparecimento</th>
-              <th class="num">2ºT Lula × Flávio</th>
-              <th class="num">Δ Lula (2ºT−1ºT)</th>
-              <th class="num">Δ Flávio (2ºT−1ºT)</th>
+              <th class="num">&Delta; Comparecimento</th>
+              <th class="num">2ºT Lula &times; Flávio</th>
+              <th class="num col-lula">&Delta; Lula (2ºT&minus;1ºT)</th>
+              <th class="num col-flavio">&Delta; Flávio (2ºT&minus;1ºT)</th>
               <th class="num">Divisão do Crescimento</th>
             </tr>
           </thead>
@@ -689,6 +1358,7 @@
         </table>
       </div>
 
+      <!-- Tabela 3: UFs -->
       <div tabindex="0" role="region" aria-labelledby="cap-t1-t2-ufs" class="table-wrapper">
         <table id="tbl-t1-t2-ufs">
           <caption id="cap-t1-t2-ufs">Comparativo 1º Turno vs. 2º Turno por Unidade da Federação (Censo Oficial de Todas as Seções)</caption>
@@ -696,25 +1366,29 @@
             <tr>
               <th>UF (Região)</th>
               <th class="num">Seções</th>
-              <th class="num">1ºT % Lula</th>
-              <th class="num">1ºT % Flávio</th>
+              <th class="num col-lula">1ºT % Lula</th>
+              <th class="num col-flavio">1ºT % Flávio</th>
               <th class="num">1ºT % 3ª Via</th>
-              <th class="num">2ºT % Lula</th>
-              <th class="num">2ºT % Flávio</th>
-              <th class="num">Δ Lula (2ºT−1ºT)</th>
-              <th class="num">Δ Flávio (2ºT−1ºT)</th>
-              <th class="num">Urnas Viradas (22→13)</th>
+              <th class="num col-lula">2ºT % Lula</th>
+              <th class="num col-flavio">2ºT % Flávio</th>
+              <th class="num col-lula">&Delta; Lula (2ºT&minus;1ºT)</th>
+              <th class="num col-flavio">&Delta; Flávio (2ºT&minus;1ºT)</th>
+              <th class="num">Viradas (22 &rarr; 13)</th>
             </tr>
           </thead>
           <tbody id="tbody-t1-t2-ufs"></tbody>
         </table>
       </div>
 
+      <!-- Explorador Municípios -->
       <div class="card">
-        <h2 class="section-title">Explorador de Municípios (1º Turno × 2º Turno)</h2>
-        <p class="section-desc">Consulte o desempenho no 1º turno (Lula, Flávio e 3ª Via), o resultado do 2º turno, a variação absoluta de votos e quantas urnas viraram de lado em cada município:</p>
+        <div class="card-header">
+          <h3 class="section-title">Explorador de Municípios (1º Turno &times; 2º Turno)</h3>
+          <p class="section-desc">Consulte o desempenho no 1º turno, o resultado do 2º turno, a variação absoluta de votos e a quantidade de urnas que viraram de lado:</p>
+        </div>
         <div class="filter-bar">
           <input type="search" id="t1t2-mun-search" class="filter-input" placeholder="Buscar município ou UF (ex: São Paulo, Belo Horizonte, Curitiba, Manaus)...">
+          <span id="t1t2-mun-count" class="search-feedback"></span>
         </div>
         <div tabindex="0" role="region" aria-labelledby="cap-t1-t2-muns" class="table-wrapper">
           <table id="tbl-t1-t2-muns">
@@ -723,14 +1397,14 @@
               <tr>
                 <th>Município (UF)</th>
                 <th class="num">Seções</th>
-                <th class="num">1ºT % Lula</th>
-                <th class="num">1ºT % Flávio</th>
+                <th class="num col-lula">1ºT % Lula</th>
+                <th class="num col-flavio">1ºT % Flávio</th>
                 <th class="num">1ºT % 3ª Via</th>
-                <th class="num">2ºT % Lula</th>
-                <th class="num">2ºT % Flávio</th>
-                <th class="num">Δ Lula (2ºT−1ºT)</th>
-                <th class="num">Δ Flávio (2ºT−1ºT)</th>
-                <th class="num">Viradas (22→13)</th>
+                <th class="num col-lula">2ºT % Lula</th>
+                <th class="num col-flavio">2ºT % Flávio</th>
+                <th class="num col-lula">&Delta; Lula (2ºT&minus;1ºT)</th>
+                <th class="num col-flavio">&Delta; Flávio (2ºT&minus;1ºT)</th>
+                <th class="num">Viradas (22 &rarr; 13)</th>
               </tr>
             </thead>
             <tbody id="tbody-t1-t2-muns"></tbody>
@@ -738,19 +1412,23 @@
         </div>
       </div>
 
+      <!-- Explorador Urnas -->
       <div class="card">
-        <h2 class="section-title">Explorador Urna por Urna: Seções com Maior Oscilação Líquida de Votos</h2>
-        <p class="section-desc">Filtre as 10 urnas com as maiores oscilações líquidas de votos entre o 1º e o 2º turno ou busque por município, UF e seção com auditoria cadastral de mesa regular:</p>
+        <div class="card-header">
+          <h3 class="section-title">Explorador Urna por Urna: Seções com Maior Oscilação Líquida de Votos</h3>
+          <p class="section-desc">Filtre as 10 seções com maiores oscilações líquidas ou busque por município, UF e seção com atestado cadastral de mesa regular:</p>
+        </div>
         <div class="filter-bar">
           <input type="search" id="sec-search" class="filter-input" placeholder="Filtrar seção por município, UF ou número da seção...">
           <select id="sec-filter-mode" class="filter-select" aria-label="Critério de ordenação e filtro das urnas">
             <option value="top10_geral">Top 10 — Maiores Oscilações Líquidas (Geral)</option>
-            <option value="top10_lula">Top 10 — Maior Crescimento Nominal de Lula (Δ13)</option>
-            <option value="top10_flavio">Top 10 — Maior Crescimento Nominal de Flávio (Δ22)</option>
-            <option value="top10_flip13">Top 10 — Maiores Transições para Lula (22 → 13)</option>
-            <option value="top10_flip22">Top 10 — Maiores Transições para Flávio (13 → 22)</option>
+            <option value="top10_lula">Top 10 — Maior Crescimento Nominal de Lula (&Delta;13)</option>
+            <option value="top10_flavio">Top 10 — Maior Crescimento Nominal de Flávio (&Delta;22)</option>
+            <option value="top10_flip13">Top 10 — Maiores Transições para Lula (22 &rarr; 13)</option>
+            <option value="top10_flip22">Top 10 — Maiores Transições para Flávio (13 &rarr; 22)</option>
             <option value="all">Mostrar Todas as Urnas do Ranking</option>
           </select>
+          <span id="sec-count" class="search-feedback"></span>
         </div>
         <div tabindex="0" role="region" aria-labelledby="cap-top-secs" class="table-wrapper">
           <table id="tbl-top-secs">
@@ -758,15 +1436,15 @@
             <thead>
               <tr>
                 <th>UF - Município (Zona / Seção)</th>
-                <th>Transição entre Turnos</th>
+                <th>Transição</th>
                 <th>Integridade Cadastral</th>
-                <th class="num">1ºT Lula</th>
-                <th class="num">1ºT Flávio</th>
+                <th class="num col-lula">1ºT Lula</th>
+                <th class="num col-flavio">1ºT Flávio</th>
                 <th class="num">1ºT 3ª Via</th>
-                <th class="num">2ºT Lula</th>
-                <th class="num">2ºT Flávio</th>
-                <th class="num">Δ Lula (2ºT−1ºT)</th>
-                <th class="num">Δ Flávio (2ºT−1ºT)</th>
+                <th class="num col-lula">2ºT Lula</th>
+                <th class="num col-flavio">2ºT Flávio</th>
+                <th class="num col-lula">&Delta; Lula (2ºT&minus;1ºT)</th>
+                <th class="num col-flavio">&Delta; Flávio (2ºT&minus;1ºT)</th>
               </tr>
             </thead>
             <tbody id="tbody-top-secs"></tbody>
@@ -784,14 +1462,18 @@
 
       <div class="grid-2">
         <div class="card">
-          <h2 class="section-title">Controle por Linha de Base: Placar 1ºT vs. 2ºT por Horário de Fechamento</h2>
-          <p class="section-desc">Ao controlar pela votação prévia do 1º turno na mesma seção, verifica-se que as urnas com fechamento após 17h05 já eram de maioria pró-Lula no 1º turno (periferias e regiões metropolitanas), com oscilação líquida similar à média:</p>
+          <div class="card-header">
+            <h3 class="section-title">Controle por Linha de Base: Placar 1ºT vs. 2ºT por Horário de Fechamento</h3>
+            <p class="section-desc">Ao controlar pela votação prévia do 1º turno na mesma seção, verifica-se que as urnas com fechamento após 17h05 já eram de maioria pró-Lula no 1º turno (periferias e regiões metropolitanas), com oscilação líquida similar à média:</p>
+          </div>
           <div id="chart-closing-bars"></div>
         </div>
 
         <div class="card">
-          <h2 class="section-title">Urnas Estendidas (&gt; 17h45): Com Voto vs. Sem Voto após 17h</h2>
-          <p class="section-desc">Das 7.352 urnas estendidas além de 17h45, 54,5% (4.004 urnas) ficaram abertas até as 19h sem receber nenhum eleitor após 17h. Nas 3.348 urnas com eleitores pós-17h, foram registrados 5.052 votos tardios.</p>
+          <div class="card-header">
+            <h3 class="section-title">Urnas Estendidas (&gt; 17h45): Com Voto vs. Sem Voto após 17h</h3>
+            <p class="section-desc">Das 7.352 urnas estendidas além de 17h45, 54,5% (4.004 urnas) ficaram abertas até as 19h sem receber nenhum eleitor após 17h. Nas 3.348 urnas com eleitores pós-17h, foram registrados 5.052 votos tardios:</p>
+          </div>
           <div id="chart-com-vs-sem"></div>
         </div>
       </div>
@@ -804,12 +1486,12 @@
               <th>Faixa de Encerramento (BRT)</th>
               <th class="num">Urnas (Censo)</th>
               <th class="num">% Urnas</th>
-              <th class="num">1ºT % Lula</th>
-              <th class="num">1ºT % Flávio</th>
-              <th class="num">2ºT % Lula</th>
-              <th class="num">2ºT % Flávio</th>
-              <th class="num">Δ Intrasseção (Lula)</th>
-              <th class="num">Δ Intrasseção (Flávio)</th>
+              <th class="num col-lula">1ºT % Lula</th>
+              <th class="num col-flavio">1ºT % Flávio</th>
+              <th class="num col-lula">2ºT % Lula</th>
+              <th class="num col-flavio">2ºT % Flávio</th>
+              <th class="num col-lula">&Delta; Intrasseção (Lula)</th>
+              <th class="num col-flavio">&Delta; Intrasseção (Flávio)</th>
               <th class="num">Votos &gt;17h</th>
               <th class="num">Abstenção Média</th>
             </tr>
@@ -819,8 +1501,10 @@
       </div>
 
       <div class="card">
-        <h2 class="section-title">Concentração Geográfica da Prorrogação</h2>
-        <p class="section-desc">98,7% de todas as urnas estendidas do Brasil concentraram-se em apenas 6 estados (RJ, SP, BA, PE, PB e SE), impulsionadas pelas restrições de transporte nas regiões metropolitanas.</p>
+        <div class="card-header">
+          <h3 class="section-title">Concentração Geográfica da Prorrogação</h3>
+          <p class="section-desc">98,7% de todas as urnas estendidas do Brasil concentraram-se em apenas 6 estados (RJ, SP, BA, PE, PB e SE), impulsionadas pelas restrições de transporte nas regiões metropolitanas:</p>
+        </div>
         <div id="chart-uf-share"></div>
       </div>
 
@@ -843,13 +1527,16 @@
       </div>
 
       <div class="card">
-        <h2 class="section-title">Explorador dos 201 Municípios com Urnas Estendidas (&gt; 17h45 BRT)</h2>
-        <p class="section-desc">Filtre por estado ou pesquise pelo nome do município para consultar quantas urnas foram prorrogadas, quantos votos ocorreram após as 17h e o placar oficial do município.</p>
+        <div class="card-header">
+          <h3 class="section-title">Explorador dos 201 Municípios com Urnas Estendidas (&gt; 17h45 BRT)</h3>
+          <p class="section-desc">Filtre por estado ou pesquise pelo nome do município para consultar quantas urnas foram prorrogadas, quantos votos ocorreram após as 17h e o placar oficial do município:</p>
+        </div>
         <div class="filter-bar">
           <input type="search" id="mun-search" class="filter-input" placeholder="Buscar município (ex: Rio de Janeiro, São Paulo, Salvador, Niterói)...">
           <select id="mun-uf-filter" class="filter-select" aria-label="Filtrar por UF">
             <option value="">Todas as UFs</option>
           </select>
+          <span id="mun-count" class="search-feedback"></span>
         </div>
         <div tabindex="0" role="region" aria-labelledby="cap-muns" class="table-wrapper">
           <table id="tbl-muns">
@@ -862,8 +1549,8 @@
                 <th class="num">% Est.</th>
                 <th class="num">Urnas c/ Voto &gt;17h</th>
                 <th class="num">Votos Pós-17h</th>
-                <th class="num">% Lula (Município)</th>
-                <th class="num">% Flávio (Município)</th>
+                <th class="num col-lula">% Lula (Município)</th>
+                <th class="num col-flavio">% Flávio (Município)</th>
               </tr>
             </thead>
             <tbody id="tbody-muns"></tbody>
@@ -876,49 +1563,53 @@
     <section id="tab-auditoria" class="tab-panel" role="tabpanel">
       <div class="callout ok">
         <strong>Documentação da Metodologia Analítica e Estatística:</strong>
-        Esta seção descreve os procedimentos metodológicos, as identidades contábeis, os modelos estatísticos e os critérios técnicos de engenharia de dados utilizados para construir os indicadores deste painel, sem repetir os valores numéricos já apresentados nas abas anteriores.
+        Esta seção descreve os procedimentos metodológicos, as identidades contábeis, os modelos estatísticos e os critérios técnicos de engenharia de dados utilizados para construir os indicadores deste painel.
       </div>
 
-      <div class="grid-2">
-        <div class="card">
-          <h2 class="section-title">1. Pareamento Determinístico por Seção e Matriz de Viradas</h2>
-          <p class="section-desc">Como o comportamento entre o 1º e o 2º turno é reconstruído no nível mais granular possível (urna por urna):</p>
-          <ul style="padding-inline-start: 1.2rem; display: flex; flex-direction: column; gap: 0.65rem; font-size: 0.91rem;">
+      <div class="doc-article">
+        <!-- 1 -->
+        <article class="doc-section">
+          <h3 class="doc-title">1. Pareamento Determinístico por Seção e Matriz de Viradas</h3>
+          <p class="doc-p">Como o comportamento entre o 1º e o 2º turno é reconstruído no nível mais granular possível (urna por urna):</p>
+          <ul class="doc-list">
             <li><strong>Chave Composta de Emparelhamento:</strong> O cruzamento longitudinal entre os dois turnos utiliza a chave primária canônica <code>(Unidade da Federação, Código do Município, Zona Eleitoral, Seção Eleitoral)</code>. Para evitar distorções de composição, o modelo filtra apenas seções que funcionaram regularmente e registraram votos válidos em ambos os turnos.</li>
-            <li><strong>Classificação Determinística de Transição:</strong> Cada seção é classificada comparando-se o candidato com maior votação nominal no 1º turno com o vencedor na mesma urna no 2º turno, gerando quatro estados mutuamente exclusivos: manutenção de liderança (<code>22 → 22</code> e <code>13 → 13</code>) ou inversão de maioria (viradas <code>22 → 13</code> e <code>13 → 22</code>).</li>
-            <li><strong>Taxa de Captura do Avanço Líquido:</strong> Para medir a eficiência de atração de novos votos em cada recorte territorial ou perfil de seção, calcula-se a razão entre a variação nominal de um candidato (<code>ΔCandidato = Votos 2ºT − Votos 1ºT</code>) e a soma das variações nominais dos dois concorrentes (<code>Δ13 + Δ22</code>).</li>
+            <li><strong>Classificação Determinística de Transição:</strong> Cada seção é classificada comparando-se o candidato com maior votação nominal no 1º turno com o vencedor na mesma urna no 2º turno, gerando quatro estados mutuamente exclusivos: manutenção de liderança (<code>22 &rarr; 22</code> e <code>13 &rarr; 13</code>) ou inversão de maioria (viradas <code>22 &rarr; 13</code> e <code>13 &rarr; 22</code>).</li>
+            <li><strong>Taxa de Captura do Avanço Líquido:</strong> Para medir a eficiência de atração de novos votos em cada recorte territorial ou perfil de seção, calcula-se a razão entre a variação nominal de um candidato (&Delta;Candidato = Votos 2ºT &minus; Votos 1ºT) e a soma das variações nominais dos dois concorrentes (&Delta;13 + &Delta;22).</li>
           </ul>
-        </div>
+        </article>
 
-        <div class="card">
-          <h2 class="section-title">2. Mensuração da Abstenção e Estratificação por Predominância</h2>
-          <p class="section-desc">Como isolamos variações de comparecimento e testamos hipóteses de desmobilização eleitoral:</p>
-          <ul style="padding-inline-start: 1.2rem; display: flex; flex-direction: column; gap: 0.65rem; font-size: 0.91rem;">
-            <li><strong>Identidade entre Comparecimento e Abstenção:</strong> Como o cadastro eleitoral é fechado meses antes do pleito, o número de eleitores aptos em cada seção permanece fixo entre o 1º e o 2º turno. Consequentemente, a variação do comparecimento total da seção — definida como a soma de votos válidos, brancos e nulos (<code>ΔComparecimento = Comp 2ºT − Comp 1ºT</code>) — corresponde exatamente ao inverso aditivo da variação de abstenção (<code>ΔAbstenção = −ΔComparecimento</code>).</li>
-            <li><strong>Estratificação por Faixas de Predominância no 1º Turno:</strong> Para testar se redutos fortemente inclinados a um candidato sofreram maior abstenção no 2º turno, todas as seções foram segmentadas em faixas de acordo com a proporção de votos válidos obtida no 1º turno. Em cada estrato, apuram-se a taxa de variação do comparecimento, a fração de urnas onde a abstenção subiu (<code>Comp 2ºT &lt; Comp 1ºT</code>) e a incidência de retração nominal de votos (<code>Δ &lt; 0</code>).</li>
+        <!-- 2 -->
+        <article class="doc-section">
+          <h3 class="doc-title">2. Mensuração da Abstenção e Estratificação por Predominância</h3>
+          <p class="doc-p">Como isolamos variações de comparecimento e testamos hipóteses de desmobilização eleitoral:</p>
+          <ul class="doc-list">
+            <li><strong>Identidade entre Comparecimento e Abstenção:</strong> Como o cadastro eleitoral é fechado meses antes do pleito, o número de eleitores aptos em cada seção permanece fixo entre o 1º e o 2º turno. Consequentemente, a variação do comparecimento total da seção — definida como a soma de votos válidos, brancos e nulos (&Delta;Comparecimento = Comp 2ºT &minus; Comp 1ºT) — corresponde exatamente ao inverso aditivo da variação de abstenção (&Delta;Abstenção = &minus;&Delta;Comparecimento).</li>
+            <li><strong>Estratificação por Faixas de Predominância no 1º Turno:</strong> Para testar se redutos fortemente inclinados a um candidato sofreram maior abstenção no 2º turno, todas as seções foram segmentadas em faixas de acordo com a proporção de votos válidos obtida no 1º turno. Em cada estrato, apuram-se a taxa de variação do comparecimento, a fração de urnas onde a abstenção subiu e a incidência de retração nominal de votos.</li>
             <li><strong>Controle por Dinâmica Federativa:</strong> A agregação por Unidade da Federação e Macrorregião permite separar o comportamento intrasseção do efeito institucional de unidades federativas que já haviam encerrado a disputa para governador no 1º turno, onde a ausência de campanhas majoritárias locais reduz o engajamento de mobilização no 2º turno.</li>
           </ul>
-        </div>
+        </article>
 
-        <div class="card">
-          <h2 class="section-title">3. Arquitetura da Urna Eletrônica, Sigilo e Normalização Temporal</h2>
-          <p class="section-desc">Por que a análise de horário de encerramento combina registros de eventos e resultados por seção:</p>
-          <ul style="padding-inline-start: 1.2rem; display: flex; flex-direction: column; gap: 0.65rem; font-size: 0.91rem;">
-            <li><strong>Separação Estrutural para Proteção do Sigilo:</strong> A arquitetura da urna eletrônica segrega os dados em três estruturas independentes: (i) o <em>Registro Digital do Voto</em>, que grava os votos individuais embaralhados por permutação pseudoaleatória e sem carimbo de tempo, impedindo que o último eleitor da fila tenha seu voto identificado; (ii) o <em>Registro Cronológico de Eventos</em>, que grava o horário exato de cada confirmação de voto e do encerramento da seção sem registrar o número votado; e (iii) o <em>Boletim de Urna</em>, que consolida o total de votos por candidato na seção.</li>
+        <!-- 3 -->
+        <article class="doc-section">
+          <h3 class="doc-title">3. Arquitetura da Urna Eletrônica, Sigilo e Normalização Temporal</h3>
+          <p class="doc-p">Por que a análise de horário de encerramento combina registros de eventos e resultados por seção:</p>
+          <ul class="doc-list">
+            <li><strong>Separação Estrutural para Proteção do Sigilo:</strong> A arquitetura da urna eletrônica segrega os dados em três estruturas independentes: (i) o <em>Registro Digital do Voto (RDV)</em>, que grava os votos individuais embaralhados por permutação pseudoaleatória e sem carimbo de tempo, impedindo que o último eleitor da fila tenha seu voto identificado; (ii) o <em>Registro Cronológico de Eventos (Log da Urna)</em>, que grava o horário exato de cada confirmação de voto e do encerramento da seção sem registrar o número votado; e (iii) o <em>Boletim de Urna (BU)</em>, que consolida o total de votos por candidato na seção.</li>
             <li><strong>Padronização de Fuso Horário (Horário de Brasília):</strong> Como o encerramento das eleições foi unificado pelo Horário Oficial de Brasília (<code>UTC-3</code>), todos os carimbos de tempo registrados no horário local das urnas situadas em fusos distintos (<code>UTC-4</code> e <code>UTC-5</code>) passam por conversão prévia antes da classificação nas faixas de fechamento e da contagem de votos posteriores às 17h00.</li>
             <li><strong>Reconstituição de Urnas de Contingência e Critério de Prorrogação:</strong> Nas seções em que houve substituição de equipamento durante o dia, os registros cronológicos da urna original e da urna de contingência são descompactados e unificados recursivamente para preservar os eventos do período da manhã. Por fim, as seções prorrogadas são subdivididas entre aquelas que efetivamente registraram eleitores após as 17h00 e aquelas que permaneceram abertas até as 19h00 apenas por cumprimento formal da prorrogação, sem fluxo residual de eleitores.</li>
           </ul>
-        </div>
+        </article>
 
-        <div class="card">
-          <h2 class="section-title">4. Estratificação Microterritorial e Estimação de Bandas de Credibilidade (95%)</h2>
-          <p class="section-desc">Modelagem matemática da decomposição de votos, condições de Karush-Kuhn-Tucker e quantificação da incerteza amostral:</p>
-          <ul style="padding-inline-start: 1.2rem; display: flex; flex-direction: column; gap: 0.85rem; font-size: 0.91rem;">
-            <li><strong>1. Justificativa da Estratificação Microterritorial (UF × Capital vs. Interior):</strong>
+        <!-- 4 -->
+        <article class="doc-section">
+          <h3 class="doc-title">4. Estratificação Microterritorial e Estimação de Bandas de Credibilidade (95%)</h3>
+          <p class="doc-p">Modelagem matemática da decomposição de votos, condições de Karush-Kuhn-Tucker e quantificação da incerteza amostral:</p>
+          <ul class="doc-list">
+            <li><strong>1. Justificativa da Estratificação Microterritorial (UF &times; Capital vs. Interior):</strong>
               Modelos paramétricos de inferência ecológica aplicados a agregados nacionais sofrem invariavelmente de <em>viés de agregação espacial</em> (falácia ecológica), pois assumem a hipótese irrealista de homogeneidade comportamental: a suposição de que a propensão de um eleitor da 3ª via migrar para um dos concorrentes no 2º turno seria idêntica em todas as regiões do país.
               <br><br>
               Para mitigar essa limitação estrutural, o pipeline decompõe o universo censitário das seções eleitorais em <strong>55 estratos territoriais independentes e mutuamente exclusivos</strong>:
-              <ul style="padding-inline-start: 1.2rem; margin-top: 0.35rem; display: flex; flex-direction: column; gap: 0.25rem;">
+              <ul style="padding-inline-start: 1.25rem; margin-top: 0.35rem; display: flex; flex-direction: column; gap: 0.25rem;">
                 <li>26 Unidades da Federação segmentadas entre <strong>Capital</strong> e <strong>Interior</strong> (26 &times; 2 = 52 estratos);</li>
                 <li>1 estrato unificado para o <strong>Distrito Federal (DF)</strong>;</li>
                 <li>2 estratos para o <strong>Exterior (ZZ)</strong> e seções especiais de trânsito.</li>
@@ -929,54 +1620,58 @@
 
             <li><strong>2. Modelagem Matemática e Condições de Fechamento Contábil:</strong>
               Para cada estrato <em>s</em>, o fluxo entre os blocos eleitorais do 1º Turno (Lula, Flávio, 3ª Via, Brancos/Nulos e Abstenção) e do 2º Turno obedece ao sistema linear com restrições de desigualdade de Karush-Kuhn-Tucker (KKT):
-              <div style="background:var(--surface-alt);border:1px solid var(--border);border-radius:0.45rem;padding:0.65rem 0.85rem;margin:0.5rem 0;font-family:monospace;font-size:0.86rem;overflow-x:auto;">
-                <strong>min<sub>&beta;</sub> &frac12; ||X<sub>s</sub> &beta;<sub>s</sub> &minus; y<sub>s</sub>||<sub>2</sub><sup>2</sup></strong> &nbsp;&nbsp;sujeito a&nbsp;&nbsp; <strong>0 &le; &beta;<sub>j,k</sub> &le; 1</strong> &nbsp;&nbsp;e&nbsp;&nbsp; <strong>&sum;<sub>k</sub> &beta;<sub>j,k</sub> = 1</strong>
+              <div class="formula-box">
+                min<sub>&beta;</sub> &frac12; ||X<sub>s</sub> &beta;<sub>s</sub> &minus; y<sub>s</sub>||<sub>2</sub><sup>2</sup> &nbsp;&nbsp;sujeito a&nbsp;&nbsp; 0 &le; &beta;<sub>j,k</sub> &le; 1 &nbsp;&nbsp;e&nbsp;&nbsp; &sum;<sub>k</sub> &beta;<sub>j,k</sub> = 1
               </div>
               Onde <strong>X<sub>s</sub></strong> representa a matriz de composição dos votos por urna no 1º turno, <strong>y<sub>s</sub></strong> representa o vetor de votos observados no 2º turno, e <strong>&beta;<sub>j,k</sub></strong> expressa a taxa de transferência líquida do bloco de origem <em>j</em> para o destino <em>k</em>.
             </li>
 
             <li><strong>3. Cálculo das Bandas de Credibilidade de 95% (Incerteza Amostral e Paramétrica):</strong>
               Diferente de estimativas pontuais determinísticas (que ocultam o grau de indeterminação inerente a variáveis latentes não observáveis), as taxas de transferência são apresentadas com seus respectivos <strong>intervalos de credibilidade empíricos a 95%</strong>:
-              <ul style="padding-inline-start: 1.2rem; margin-top: 0.35rem; display: flex; flex-direction: column; gap: 0.4rem;">
+              <ul style="padding-inline-start: 1.25rem; margin-top: 0.35rem; display: flex; flex-direction: column; gap: 0.35rem;">
                 <li><strong>Reamostragem não-paramétrica por Cluster (Block Bootstrap):</strong> Como seções eleitorais de uma mesma zona ou local de votação compartilham correlação espacial intra-escola, o algoritmo executa <em>B = 2.000</em> iterações de <em>Cluster Bootstrap</em>, reamostrando com reposição no nível do Local de Votação / Zona Eleitoral.</li>
                 <li><strong>Distribuição Posterior de Parâmetros:</strong> A cada réplica <em>b</em> &in; {1, &hellip;, <em>B</em>}, a matriz restrita &beta;&#770;<sub>s</sub><sup>(b)</sup> é recalculada, preservando a identidade contábil de cada urna reamostrada.</li>
                 <li><strong>Extração dos Quantis:</strong> A banda de credibilidade inferior corresponde ao <strong>percentil 2,5%</strong> e a superior ao <strong>percentil 97,5%</strong> da distribuição bootstrap empírica:
-                  <div style="background:var(--surface-alt);border:1px solid var(--border);border-radius:0.45rem;padding:0.65rem 0.85rem;margin:0.4rem 0;font-family:monospace;font-size:0.86rem;overflow-x:auto;">
-                    <strong>IC<sub>95%</sub>(&beta;<sub>j,k</sub>) = [ Q<sub>0,025</sub>(&beta;&#770;<sub>j,k</sub><sup>(b)</sup>), &nbsp; Q<sub>0,975</sub>(&beta;&#770;<sub>j,k</sub><sup>(b)</sup>) ]</strong>
+                  <div class="formula-box">
+                    IC<sub>95%</sub>(&beta;<sub>j,k</sub>) = [ Q<sub>0,025</sub>(&beta;&#770;<sub>j,k</sub><sup>(b)</sup>), &nbsp; Q<sub>0,975</sub>(&beta;&#770;<sub>j,k</sub><sup>(b)</sup>) ]
                   </div>
                 </li>
               </ul>
             </li>
 
             <li><strong>4. Interpretação Técnica e Limitações:</strong>
-              <ul style="padding-inline-start: 1.2rem; margin-top: 0.25rem; display: flex; flex-direction: column; gap: 0.35rem;">
+              <ul style="padding-inline-start: 1.25rem; margin-top: 0.25rem; display: flex; flex-direction: column; gap: 0.25rem;">
                 <li><strong>Amplitude das Bandas:</strong> Em estratos onde o contingente nominal de votos da 3ª via foi residual (ex.: pequenas capitais do Norte), o intervalo [Q<sub>0,025</sub>, Q<sub>0,975</sub>] tende a ser mais amplo, refletindo matematicamente a maior indeterminação estatística inerente aos dados agregados.</li>
                 <li><strong>Sigilo Constitucional:</strong> As bandas quantificam a margem de incerteza da projeção agregada; não constituem violação do sigilo do voto, que permanece inviolável pela arquitetura de permutação pseudoaleatória do Registro Digital do Voto (RDV).</li>
               </ul>
             </li>
           </ul>
-        </div>
+        </article>
 
-        <div class="card">
-          <h2 class="section-title">5. Limitações Metodológicas, Não-Causalidade e Falácia Ecológica</h2>
-          <p class="section-desc">Diretrizes epistemológicas sobre o que o modelo analítico pode e não pode afirmar:</p>
-          <ul style="padding-inline-start: 1.2rem; display: flex; flex-direction: column; gap: 0.65rem; font-size: 0.91rem;">
+        <!-- 5 -->
+        <article class="doc-section">
+          <h3 class="doc-title">5. Limitações Metodológicas, Não-Causalidade e Falácia Ecológica</h3>
+          <p class="doc-p">Diretrizes epistemológicas sobre o que o modelo analítico pode e não pode afirmar:</p>
+          <ul class="doc-list">
             <li><strong>Mitigação da Falácia Ecológica por Microterritorialidade:</strong> A decomposição de votos por inferência ecológica estima probabilidades agregadas de transição condicional no nível populacional de cada recorte. Para combater a premissa irrealista de homogeneidade nacional, o painel disponibiliza o cálculo estratificado para cada uma das <strong>27 UFs</strong> e o recorte de <strong>Capital vs. Interior</strong> com intervalos de credibilidade de 95% e métrica de resíduo ($R^2$), preservando o sigilo constitucional inviolável do voto individual.</li>
             <li><strong>Não-Causalidade no Horário de Encerramento (Variáveis Omitidas):</strong> A constatação de que urnas fechadas após as 17h/17h45 apresentaram maior votação para determinado candidato decorre da demografia socioespacial dessas seções — situadas em periferias urbanas de regiões metropolitanas com alta densidade de eleitores por seção, lentidão de biometria e restrições de transporte. Não se deve inferir qualquer relação de causalidade direta entre o atraso de fechamento e a preferência partidária do eleitor.</li>
             <li><strong>Auditoria de Integridade de Seções Agregadas:</strong> O algoritmo de pareamento realizou verificação cadastral nas 499.206 seções para impedir que junções físicas de seções eleitorais em uma única urna física pelo TSE entre turnos gerassem falsas anomalias de comparecimento ou votação.</li>
           </ul>
-        </div>
+        </article>
 
-        <div class="card">
-          <h2 class="section-title">6. Governança, Reprodutibilidade Aberta e Hashes Criptográficos</h2>
-          <p class="section-desc">Padrões de verificação aberta para auditoria independente por terceiros:</p>
-          <ul style="padding-inline-start: 1.2rem; display: flex; flex-direction: column; gap: 0.65rem; font-size: 0.91rem;">
+        <!-- 6 -->
+        <article class="doc-section">
+          <h3 class="doc-title">6. Governança, Reprodutibilidade Aberta e Hashes Criptográficos</h3>
+          <p class="doc-p">Padrões de verificação aberta para auditoria independente por terceiros:</p>
+          <ul class="doc-list">
             <li><strong>Repositório de Código Aberto (GitHub):</strong>
-              <div style="margin-block-start:0.35rem;margin-block-end:0.45rem;">
-                <a href="https://github.com/renanctm/MapaDaUrna" target="_blank" rel="noopener noreferrer" class="pill-script" style="border-color:var(--accent);font-weight:700;">📦 github.com/renanctm/MapaDaUrna</a>
+              <div style="margin-block-start:0.35rem;margin-block-end:0.65rem;">
+                <a href="https://github.com/renanctm/MapaDaUrna" target="_blank" rel="noopener noreferrer" class="btn-action">
+                  📦 Repositório Oficial: github.com/renanctm/MapaDaUrna
+                </a>
               </div>
             </li>
-            <li><strong>Código Aberto do Pipeline (Download e Visualização Direta):</strong>
+            <li><strong>Pipeline Analítico Completo (Download e Visualização Direta em Texto Puro):</strong>
               Todos os scripts em Python que compõem o pipeline analítico estão hospedados publicamente e podem ser inspecionados ou baixados diretamente pelo navegador:
               <div style="margin-block-start:0.5rem;display:flex;flex-wrap:wrap;gap:0.45rem;">
                 <a href="src/compute_eco_uf_cap_int.py" target="_blank" rel="noopener noreferrer" class="pill-script">📄 compute_eco_uf_cap_int.py</a>
@@ -988,17 +1683,37 @@
               </div>
             </li>
             <li><strong>Manifesto Criptográfico de Integridade (Hashes SHA-256):</strong>
-              <div style="margin-block-start:0.35rem;margin-block-end:0.45rem;">
-                <a href="hashes.txt" target="_blank" rel="noopener noreferrer" class="pill-script" style="border-color:var(--accent);font-weight:700;">🔐 Baixar / Visualizar hashes.txt (Manifesto Completo SHA-256)</a>
+              <div style="margin-block-start:0.4rem;margin-block-end:0.65rem;">
+                <a href="hashes.txt" target="_blank" rel="noopener noreferrer" class="btn-action">
+                  🔐 Baixar Manifesto Completo SHA-256 (hashes.txt)
+                </a>
               </div>
-              <div style="margin-block-start:0.35rem;display:flex;flex-direction:column;gap:0.45rem;font-family:monospace;font-size:0.78rem;background:var(--surface-alt);padding:0.65rem;border-radius:0.4rem;border:1px solid var(--border);word-break:break-all;">
-                <div><strong>dashboard_data.json:</strong><br><code>ddc97d5891b5c05f73a3df1ec77d7aeb360b0a6b5e3478eebb612d02fd38b36e</code></div>
-                <div><strong>eco_inference_slices.json:</strong><br><code>ce754e33909ae918c23c37fbc0e6ce97b973b491e4ae6ea523eed397ee14e31f</code></div>
-                <div><strong>web/data.js:</strong><br><code>6e40c12f254786e0285b404e95dae02f2af84842ac4e4f8068c7642af92f07cd</code></div>
+              <div class="crypto-certificate">
+                <div class="crypto-row">
+                  <span class="crypto-label">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                    dashboard_data.json:
+                  </span>
+                  <code class="crypto-hash">ddc97d5891b5c05f73a3df1ec77d7aeb360b0a6b5e3478eebb612d02fd38b36e</code>
+                </div>
+                <div class="crypto-row">
+                  <span class="crypto-label">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                    eco_inference_slices.json:
+                  </span>
+                  <code class="crypto-hash">ce754e33909ae918c23c37fbc0e6ce97b973b491e4ae6ea523eed397ee14e31f</code>
+                </div>
+                <div class="crypto-row">
+                  <span class="crypto-label">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                    web/data.js:
+                  </span>
+                  <code class="crypto-hash">6e40c12f254786e0285b404e95dae02f2af84842ac4e4f8068c7642af92f07cd</code>
+                </div>
               </div>
             </li>
           </ul>
-        </div>
+        </article>
       </div>
     </section>
   </main>
@@ -1007,34 +1722,38 @@
   <script>
     (function() {
       const D = window.ELECTION_DATA;
-      const fmtInt = (n) => Number(n).toLocaleString('pt-BR');
-      const fmtPct = (n) => Number(n).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '%';
+      if (!D) return;
 
-      // Dark mode toggle following modern-web-guidance (dark-mode-toggle)
+      const fmtInt = (n) => Number(n).toLocaleString('pt-BR');
+      const fmtPct = (n, dec = 2) => Number(n).toLocaleString('pt-BR', { minimumFractionDigits: dec, maximumFractionDigits: dec }) + '%';
+
+      // Alternador de tema claro / escuro nativo
       const metaScheme = document.querySelector('meta[name="color-scheme"]');
       const btnTheme = document.getElementById('theme-toggle');
-      btnTheme.addEventListener('click', () => {
-        const sysDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        const stored = localStorage.getItem('theme-scheme');
-        const currentRendered = stored || (sysDark ? 'dark' : 'light');
-        const target = currentRendered === 'dark' ? 'light' : 'dark';
-        const sysCurrent = sysDark ? 'dark' : 'light';
-        if (target === sysCurrent) {
-          localStorage.removeItem('theme-scheme');
-          metaScheme.content = 'light dark';
-        } else {
-          localStorage.setItem('theme-scheme', target);
-          metaScheme.content = target;
-        }
-        if (typeof gtag === 'function') {
-          gtag('event', 'select_content', {
-            content_type: 'theme',
-            item_id: target
-          });
-        }
-      });
+      if (btnTheme) {
+        btnTheme.addEventListener('click', () => {
+          const sysDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          const stored = localStorage.getItem('theme-scheme');
+          const currentRendered = stored || (sysDark ? 'dark' : 'light');
+          const target = currentRendered === 'dark' ? 'light' : 'dark';
+          const sysCurrent = sysDark ? 'dark' : 'light';
+          if (target === sysCurrent) {
+            localStorage.removeItem('theme-scheme');
+            metaScheme.content = 'light dark';
+          } else {
+            localStorage.setItem('theme-scheme', target);
+            metaScheme.content = target;
+          }
+          if (typeof gtag === 'function') {
+            gtag('event', 'select_content', {
+              content_type: 'theme',
+              item_id: target
+            });
+          }
+        });
+      }
 
-      // Tabs
+      // Navegação por Abas
       const tabBtns = document.querySelectorAll('.tab-btn');
       const tabPanels = document.querySelectorAll('.tab-panel');
       tabBtns.forEach(btn => {
@@ -1043,7 +1762,8 @@
           tabPanels.forEach(p => p.classList.remove('active'));
           btn.setAttribute('aria-selected', 'true');
           const panelId = btn.dataset.tab;
-          document.getElementById(panelId).classList.add('active');
+          const targetPanel = document.getElementById(panelId);
+          if (targetPanel) targetPanel.classList.add('active');
 
           if (typeof gtag === 'function') {
             gtag('event', 'select_content', {
@@ -1055,137 +1775,158 @@
         });
       });
 
-      // 1. Render Closing Bands Table & Chart
+      // 1. Tabela e Gráfico de Encerramento (Aba 2)
       const tbodyClosing = document.getElementById('tbody-closing');
-      let barsHtml = '<div style="display:flex;flex-direction:column;gap:0.65rem;margin-top:0.5rem;">';
-      D.closing_bands.forEach(b => {
-        const tr = document.createElement('tr');
-        const s13 = b.delta_13_censo >= 0 ? `+${fmtInt(b.delta_13_censo)}` : fmtInt(b.delta_13_censo);
-        const s22 = b.delta_22_censo >= 0 ? `+${fmtInt(b.delta_22_censo)}` : fmtInt(b.delta_22_censo);
-        tr.innerHTML = `
-          <th>${b.band}</th>
-          <td class="num">${fmtInt(b.urnas_censo)}</td>
-          <td class="num">${fmtPct(b.pct_urnas_censo)}</td>
-          <td class="num"><span class="pill-lula">${fmtPct(b.t1_lula_pct_censo)}</span></td>
-          <td class="num"><span class="pill-flavio">${fmtPct(b.t1_flavio_pct_censo)}</span></td>
-          <td class="num"><span class="pill-lula">${fmtPct(b.lula_pct_bu)}</span></td>
-          <td class="num"><span class="pill-flavio">${fmtPct(b.flavio_pct_bu)}</span></td>
-          <td class="num"><strong>${s13}</strong></td>
-          <td class="num"><strong>${s22}</strong></td>
-          <td class="num">${fmtInt(b.votos_pos17_log)}</td>
-          <td class="num">${fmtPct(b.abstencao_pct_bu)}</td>
-        `;
-        tbodyClosing.appendChild(tr);
+      if (tbodyClosing && D.closing_bands) {
+        let barsHtml = '<div style="display:flex;flex-direction:column;gap:0.65rem;margin-top:0.5rem;">';
+        D.closing_bands.forEach(b => {
+          const tr = document.createElement('tr');
+          const s13 = b.delta_13_censo >= 0 ? `+${fmtInt(b.delta_13_censo)}` : fmtInt(b.delta_13_censo);
+          const s22 = b.delta_22_censo >= 0 ? `+${fmtInt(b.delta_22_censo)}` : fmtInt(b.delta_22_censo);
+          tr.innerHTML = `
+            <th>${b.band}</th>
+            <td class="num">${fmtInt(b.urnas_censo)}</td>
+            <td class="num">${fmtPct(b.pct_urnas_censo)}</td>
+            <td class="num"><span class="pill-lula">${fmtPct(b.t1_lula_pct_censo)}</span></td>
+            <td class="num"><span class="pill-flavio">${fmtPct(b.t1_flavio_pct_censo)}</span></td>
+            <td class="num"><span class="pill-lula">${fmtPct(b.lula_pct_bu)}</span></td>
+            <td class="num"><span class="pill-flavio">${fmtPct(b.flavio_pct_bu)}</span></td>
+            <td class="num" style="color:var(--lula);font-weight:700;">${s13}</td>
+            <td class="num" style="color:var(--flavio);font-weight:700;">${s22}</td>
+            <td class="num">${fmtInt(b.votos_pos17_log)}</td>
+            <td class="num">${fmtPct(b.abstencao_pct_bu)}</td>
+          `;
+          tbodyClosing.appendChild(tr);
 
-        barsHtml += `
-          <div style="padding:0.5rem 0.75rem;border-radius:0.45rem;background:var(--surface-alt);border:1px solid var(--border);">
-            <div class="stat-row" style="font-size:0.8rem;margin-bottom:0.15rem;">
-              <span><strong>${b.band}</strong> (${fmtInt(b.urnas_censo)} urnas)</span>
-              <span>2ºT: Lula <strong style="color:var(--lula)">${fmtPct(b.lula_pct_bu)}</strong> × Flávio <strong style="color:var(--flavio)">${fmtPct(b.flavio_pct_bu)}</strong></span>
-            </div>
-            <div class="stat-row" style="font-size:0.75rem;color:var(--text-muted);margin-bottom:0.3rem;">
-              <span>Linha de Base (1ºT): Lula <strong>${fmtPct(b.t1_lula_pct_censo)}</strong> × Flávio <strong>${fmtPct(b.t1_flavio_pct_censo)}</strong></span>
-              <span>Δ Intrasseção: Lula <strong>${s13}</strong> × Flávio <strong>${s22}</strong></span>
-            </div>
-            <div class="bar-dual" style="margin-top:0;block-size:0.45rem;">
-              <div class="bar-lula" style="width:${b.lula_pct_bu}%"></div>
-              <div class="bar-flavio" style="width:${b.flavio_pct_bu}%"></div>
-            </div>
-          </div>
-        `;
-      });
-      barsHtml += '</div>';
-      document.getElementById('chart-closing-bars').innerHTML = barsHtml;
-
-      // Com voto vs sem voto chart
-      const cv = D.estendidas_com_vs_sem_voto.com_voto_pos17;
-      const sv = D.estendidas_com_vs_sem_voto.sem_voto_pos17;
-      document.getElementById('chart-com-vs-sem').innerHTML = `
-        <div style="display:flex;flex-direction:column;gap:1.1rem;margin-top:0.75rem;">
-          <div style="padding:1rem;border-radius:0.6rem;background:var(--surface-alt);border:1px solid var(--border);">
-            <div class="stat-row" style="font-weight:700;font-size:0.9rem;">
-              <span>Urnas Estendidas COM Eleitores Pós-17h (${fmtInt(cv.urnas_censo)} urnas / ${fmtInt(cv.votos_pos17_censo)} votos tardios)</span>
-              <span class="pill-lula">Lula ${fmtPct(cv.lula_pct_bu)}</span>
-            </div>
-            <div class="bar-dual">
-              <div class="bar-lula" style="width:${cv.lula_pct_bu}%"></div>
-              <div class="bar-flavio" style="width:${cv.flavio_pct_bu}%"></div>
-            </div>
-            <div style="font-size:0.8rem;color:var(--text-muted);margin-top:0.4rem;">
-              Seções periféricas e metropolitanas onde efetivamente houve fila/chegada de eleitores após as 17h.
-            </div>
-          </div>
-
-          <div style="padding:1rem;border-radius:0.6rem;background:var(--surface-alt);border:1px solid var(--border);">
-            <div class="stat-row" style="font-weight:700;font-size:0.9rem;">
-              <span>Urnas Estendidas SEM Eleitores Pós-17h (${fmtInt(sv.urnas_censo)} urnas / 0 votos tardios)</span>
-              <span class="pill-lula">Lula ${fmtPct(sv.lula_pct_bu)}</span>
-            </div>
-            <div class="bar-dual">
-              <div class="bar-lula" style="width:${sv.lula_pct_bu}%"></div>
-              <div class="bar-flavio" style="width:${sv.flavio_pct_bu}%"></div>
-            </div>
-            <div style="font-size:0.8rem;color:var(--text-muted);margin-top:0.4rem;">
-              Seções que permaneceram abertas até as 19h por cumprimento formal da liminar, mas sem nenhum votante após 17h.
-            </div>
-          </div>
-        </div>
-      `;
-
-      // 2. Render UFs & Municipalities
-      const tbodyUfs = document.getElementById('tbody-ufs');
-      const ufSelect = document.getElementById('mun-uf-filter');
-      let ufShareHtml = '<div style="display:flex;flex-direction:column;gap:0.65rem;margin-top:0.5rem;">';
-
-      D.uf_summary.forEach(u => {
-        if (u.estendidas_1745 > 0) {
-          const opt = document.createElement('option');
-          opt.value = u.uf;
-          opt.textContent = `${u.uf} (${fmtInt(u.estendidas_1745)} urnas estendidas)`;
-          ufSelect.appendChild(opt);
-        }
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <th>${u.uf}</th>
-          <td class="num">${fmtInt(u.urnas_total)}</td>
-          <td class="num"><strong>${fmtInt(u.estendidas_1745)}</strong></td>
-          <td class="num">${fmtPct(u.pct_estendidas)}</td>
-          <td class="num">${fmtInt(u.prorrogadas_1855)}</td>
-          <td class="num">${fmtInt(u.com_voto_pos17)}</td>
-          <td class="num"><strong>${fmtInt(u.votos_pos17)}</strong></td>
-        `;
-        tbodyUfs.appendChild(tr);
-
-        if (u.estendidas_1745 >= 50) {
-          const shareNat = (u.estendidas_1745 / D.eleicao.urnas_estendidas_1745 * 100);
-          ufShareHtml += `
-            <div>
-              <div class="stat-row" style="font-size:0.82rem;margin-bottom:0.2rem;">
-                <span><strong>${u.uf}</strong>: ${fmtInt(u.estendidas_1745)} urnas estendidas (${fmtPct(u.pct_estendidas)} da UF)</span>
-                <span><strong>${fmtInt(u.votos_pos17)}</strong> votos pós-17h (${fmtPct(shareNat)} do total nacional)</span>
+          barsHtml += `
+            <div style="padding:0.65rem 0.85rem;border-radius:8px;background:var(--surface-alt);border:1px solid var(--border);">
+              <div class="stat-row" style="font-size:0.83rem;margin-bottom:0.15rem;">
+                <span><strong>${b.band}</strong> (${fmtInt(b.urnas_censo)} urnas &bull; ${fmtPct(b.pct_urnas_censo)})</span>
+                <span>2ºT: Lula <strong style="color:var(--lula)">${fmtPct(b.lula_pct_bu)}</strong> &times; Flávio <strong style="color:var(--flavio)">${fmtPct(b.flavio_pct_bu)}</strong></span>
               </div>
-              <div class="bar-dual" style="margin-top:0;">
-                <div style="background:var(--accent);width:${shareNat}%"></div>
+              <div class="stat-row" style="font-size:0.77rem;color:var(--text-muted);margin-bottom:0.35rem;">
+                <span>Linha de Base 1ºT: Lula <strong>${fmtPct(b.t1_lula_pct_censo)}</strong> &times; Flávio <strong>${fmtPct(b.t1_flavio_pct_censo)}</strong></span>
+                <span>&Delta; Intrasseção: Lula <strong>${s13}</strong> &times; Flávio <strong>${s22}</strong></span>
+              </div>
+              <div class="bar-dual" style="margin-top:0;block-size:0.55rem;">
+                <div class="bar-lula" style="inline-size:${b.lula_pct_bu}%"></div>
+                <div class="bar-flavio" style="inline-size:${b.flavio_pct_bu}%"></div>
               </div>
             </div>
           `;
-        }
-      });
-      ufShareHtml += '</div>';
-      document.getElementById('chart-uf-share').innerHTML = ufShareHtml;
+        });
+        barsHtml += '</div>';
+        const chartClosingBars = document.getElementById('chart-closing-bars');
+        if (chartClosingBars) chartClosingBars.innerHTML = barsHtml;
+      }
 
+      // Gráfico Com Voto vs Sem Voto pós-17h
+      const chartComVsSem = document.getElementById('chart-com-vs-sem');
+      if (chartComVsSem && D.estendidas_com_vs_sem_voto) {
+        const cv = D.estendidas_com_vs_sem_voto.com_voto_pos17;
+        const sv = D.estendidas_com_vs_sem_voto.sem_voto_pos17;
+        chartComVsSem.innerHTML = `
+          <div style="display:flex;flex-direction:column;gap:0.9rem;margin-top:0.4rem;">
+            <div style="padding:0.95rem 1.15rem;border-radius:8px;background:var(--surface-alt);border:1px solid var(--border);">
+              <div class="stat-row" style="font-weight:700;font-size:0.88rem;">
+                <span>Urnas Estendidas COM Voto Pós-17h (${fmtInt(cv.urnas_censo)} urnas &bull; ${fmtInt(cv.votos_pos17_censo)} votos tardios)</span>
+                <span class="pill-lula">Lula ${fmtPct(cv.lula_pct_bu)}</span>
+              </div>
+              <div class="bar-dual" style="block-size:0.6rem;margin-block:0.4rem;">
+                <div class="bar-lula" style="inline-size:${cv.lula_pct_bu}%"></div>
+                <div class="bar-flavio" style="inline-size:${cv.flavio_pct_bu}%"></div>
+              </div>
+              <div style="font-size:0.8rem;color:var(--text-muted);">
+                Seções periféricas e metropolitanas onde efetivamente houve fila ou chegada de eleitores após as 17h.
+              </div>
+            </div>
+
+            <div style="padding:0.95rem 1.15rem;border-radius:8px;background:var(--surface-alt);border:1px solid var(--border);">
+              <div class="stat-row" style="font-weight:700;font-size:0.88rem;">
+                <span>Urnas Estendidas SEM Voto Pós-17h (${fmtInt(sv.urnas_censo)} urnas &bull; 0 votos tardios)</span>
+                <span class="pill-lula">Lula ${fmtPct(sv.lula_pct_bu)}</span>
+              </div>
+              <div class="bar-dual" style="block-size:0.6rem;margin-block:0.4rem;">
+                <div class="bar-lula" style="inline-size:${sv.lula_pct_bu}%"></div>
+                <div class="bar-flavio" style="inline-size:${sv.flavio_pct_bu}%"></div>
+              </div>
+              <div style="font-size:0.8rem;color:var(--text-muted);">
+                Seções que permaneceram abertas até as 19h apenas por cumprimento formal de prorrogação administrativa, sem eleitores retardatários.
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      // 2. Resumo de UFs e Municípios Prorrogados
+      const tbodyUfs = document.getElementById('tbody-ufs');
+      const ufSelect = document.getElementById('mun-uf-filter');
+      const chartUfShare = document.getElementById('chart-uf-share');
+      let ufShareHtml = '<div style="display:flex;flex-direction:column;gap:0.65rem;margin-top:0.4rem;">';
+
+      if (tbodyUfs && D.uf_summary) {
+        D.uf_summary.forEach(u => {
+          if (u.estendidas_1745 > 0 && ufSelect) {
+            const opt = document.createElement('option');
+            opt.value = u.uf;
+            opt.textContent = `${u.uf} (${fmtInt(u.estendidas_1745)} urnas estendidas)`;
+            ufSelect.appendChild(opt);
+          }
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <th>${u.uf}</th>
+            <td class="num">${fmtInt(u.urnas_total)}</td>
+            <td class="num"><strong>${fmtInt(u.estendidas_1745)}</strong></td>
+            <td class="num">${fmtPct(u.pct_estendidas)}</td>
+            <td class="num">${fmtInt(u.prorrogadas_1855)}</td>
+            <td class="num">${fmtInt(u.com_voto_pos17)}</td>
+            <td class="num"><strong>${fmtInt(u.votos_pos17)}</strong></td>
+          `;
+          tbodyUfs.appendChild(tr);
+
+          if (u.estendidas_1745 >= 50 && D.eleicao) {
+            const shareNat = (u.estendidas_1745 / D.eleicao.urnas_estendidas_1745 * 100);
+            ufShareHtml += `
+              <div style="padding:0.55rem 0.8rem;background:var(--surface-alt);border:1px solid var(--border);border-radius:6px;">
+                <div class="stat-row" style="font-size:0.83rem;margin-bottom:0.25rem;">
+                  <span><strong>${u.uf}</strong>: ${fmtInt(u.estendidas_1745)} urnas estendidas (${fmtPct(u.pct_estendidas)} da UF)</span>
+                  <span><strong>${fmtInt(u.votos_pos17)}</strong> votos pós-17h (${fmtPct(shareNat)} do total nacional)</span>
+                </div>
+                <div class="bar-dual" style="margin-top:0;block-size:0.45rem;">
+                  <div style="background:var(--accent);inline-size:${shareNat}%"></div>
+                </div>
+              </div>
+            `;
+          }
+        });
+        ufShareHtml += '</div>';
+        if (chartUfShare) chartUfShare.innerHTML = ufShareHtml;
+      }
+
+      // Explorador de Municípios Prorrogados (Aba 2)
       const tbodyMuns = document.getElementById('tbody-muns');
       const searchInput = document.getElementById('mun-search');
+      const munCount = document.getElementById('mun-count');
 
       function renderMuns() {
-        const q = searchInput.value.trim().toLowerCase();
-        const ufVal = ufSelect.value;
+        if (!tbodyMuns || !D.top_municipios_estendidas) return;
+        const q = searchInput ? searchInput.value.trim().toLowerCase() : '';
+        const ufVal = ufSelect ? ufSelect.value : '';
         tbodyMuns.innerHTML = '';
         const filtered = D.top_municipios_estendidas.filter(m => {
           if (ufVal && m.uf !== ufVal) return false;
           if (q && !m.municipio.toLowerCase().includes(q) && !m.uf.toLowerCase().includes(q)) return false;
           return true;
         });
+
+        if (munCount) {
+          munCount.textContent = `Mostrando ${filtered.length} de ${D.top_municipios_estendidas.length} municípios`;
+        }
+
+        if (filtered.length === 0) {
+          tbodyMuns.innerHTML = `<tr><td colspan="8" class="empty-state">Nenhum município prorrogado encontrado para o filtro aplicado.</td></tr>`;
+          return;
+        }
 
         filtered.forEach(m => {
           const tr = document.createElement('tr');
@@ -1202,58 +1943,71 @@
           tbodyMuns.appendChild(tr);
         });
       }
-      searchInput.addEventListener('input', renderMuns);
-      ufSelect.addEventListener('change', renderMuns);
+
+      if (searchInput) searchInput.addEventListener('input', renderMuns);
+      if (ufSelect) ufSelect.addEventListener('change', renderMuns);
       renderMuns();
 
-      // 4. Render T1 vs T2 General Comparison Tab
+      // 4. Comparativo Geral 1º vs. 2º Turno (Aba 1)
       const cg = D.comparativo_geral_t1_t2;
       if (cg) {
         const rn = cg.resumo_nacional;
         const fa = rn.flips;
         const totS = rn.total_secoes;
-        document.getElementById('chart-flips-summary').innerHTML = `
-          <div style="display:flex;flex-direction:column;gap:0.65rem;margin-top:0.5rem;font-size:0.88rem;">
-            <div class="stat-row" style="padding:0.75rem 1rem;border-radius:0.5rem;background:var(--surface-alt);">
-              <span>Flávio venceu no 1ºT e manteve no 2ºT (<code>22 → 22</code>):</span>
-              <strong>${fmtInt(fa['22->22'])} urnas (${fmtPct(fa['22->22']/totS*100)})</strong>
-            </div>
-            <div class="stat-row" style="padding:0.75rem 1rem;border-radius:0.5rem;background:var(--surface-alt);">
-              <span>Lula venceu no 1ºT e manteve no 2ºT (<code>13 → 13</code>):</span>
-              <strong>${fmtInt(fa['13->13'])} urnas (${fmtPct(fa['13->13']/totS*100)})</strong>
-            </div>
-            <div class="stat-row" style="padding:0.75rem 1rem;border-radius:0.5rem;background:var(--lula-soft);color:var(--lula);">
-              <span><strong>Virada para Lula no 2ºT (<code>22 → 13</code>):</strong></span>
-              <strong>${fmtInt(fa['22->13'])} urnas (${fmtPct(fa['22->13']/totS*100)})</strong>
-            </div>
-            <div class="stat-row" style="padding:0.75rem 1rem;border-radius:0.5rem;background:var(--flavio-soft);color:var(--flavio);">
-              <span><strong>Virada para Flávio no 2ºT (<code>13 → 22</code>):</strong></span>
-              <strong>${fmtInt(fa['13->22'])} urnas (${fmtPct(fa['13->22']/totS*100)})</strong>
-            </div>
-            <div class="stat-row" style="padding:0.75rem 1rem;border-radius:0.5rem;background:var(--surface-alt);">
-              <span>Urnas onde Lula cresceu mais que Flávio (<code>Δ13 &gt; Δ22</code>):</span>
-              <strong>${fmtInt(rn.lula_grew_more)} urnas (${fmtPct(rn.lula_grew_more/totS*100)})</strong>
-            </div>
-          </div>
-        `;
 
-        document.getElementById('chart-t1-t2-regions').innerHTML = `
-          <div style="display:flex;flex-direction:column;gap:0.55rem;margin-top:0.5rem;">
-            ${cg.por_regiao.map(r => `
-              <div style="padding:0.65rem 0.9rem;border-radius:0.5rem;background:var(--surface-alt);border:1px solid var(--border);font-size:0.83rem;">
-                <div class="stat-row" style="font-weight:700;margin-bottom:0.2rem;">
-                  <span>${r.regiao} (${fmtInt(r.secoes)} urnas • ${fmtInt(r.flips_22_to_13)} viradas 22→13)</span>
-                  <span>2ºT: Lula <strong style="color:var(--lula)">${fmtPct(r.t2_lula_pct)}</strong> × Flávio <strong style="color:var(--flavio)">${fmtPct(r.t2_flavio_pct)}</strong></span>
-                </div>
-                <div class="stat-row" style="color:var(--text-muted);">
-                  <span>1ºT: Lula ${fmtPct(r.t1_lula_pct)} | Flávio ${fmtPct(r.t1_flavio_pct)} | 3ª Via ${fmtPct(r.t1_3v_pct)}</span>
-                  <span>Δ: Lula <strong>+${fmtInt(r.delta_13)}</strong> | Flávio <strong>+${fmtInt(r.delta_22)}</strong></span>
-                </div>
+        const chartFlips = document.getElementById('chart-flips-summary');
+        if (chartFlips) {
+          chartFlips.innerHTML = `
+            <div style="display:flex;flex-direction:column;gap:0.65rem;margin-top:0.4rem;font-size:0.86rem;">
+              <div class="stat-row" style="padding:0.75rem 0.95rem;border-radius:8px;background:var(--surface-alt);border:1px solid var(--border);">
+                <span>Flávio liderou no 1ºT e manteve no 2ºT (<code>22 &rarr; 22</code>):</span>
+                <strong>${fmtInt(fa['22->22'])} urnas (${fmtPct(fa['22->22']/totS*100)})</strong>
               </div>
-            `).join('')}
-          </div>
-        `;
+              <div class="stat-row" style="padding:0.75rem 0.95rem;border-radius:8px;background:var(--surface-alt);border:1px solid var(--border);">
+                <span>Lula liderou no 1ºT e manteve no 2ºT (<code>13 &rarr; 13</code>):</span>
+                <strong>${fmtInt(fa['13->13'])} urnas (${fmtPct(fa['13->13']/totS*100)})</strong>
+              </div>
+              <div class="stat-row" style="padding:0.75rem 0.95rem;border-radius:8px;background:var(--lula-bg);color:var(--lula);border:1px solid var(--lula-border);">
+                <span><strong>Virada para Lula no 2ºT (<code>22 &rarr; 13</code>):</strong></span>
+                <strong>${fmtInt(fa['22->13'])} urnas (${fmtPct(fa['22->13']/totS*100)})</strong>
+              </div>
+              <div class="stat-row" style="padding:0.75rem 0.95rem;border-radius:8px;background:var(--flavio-bg);color:var(--flavio);border:1px solid var(--flavio-border);">
+                <span><strong>Virada para Flávio no 2ºT (<code>13 &rarr; 22</code>):</strong></span>
+                <strong>${fmtInt(fa['13->22'])} urnas (${fmtPct(fa['13->22']/totS*100)})</strong>
+              </div>
+              <div class="stat-row" style="padding:0.75rem 0.95rem;border-radius:8px;background:var(--surface-alt);border:1px solid var(--border);">
+                <span>Urnas onde Lula cresceu mais que Flávio (&Delta;13 &gt; &Delta;22):</span>
+                <strong>${fmtInt(rn.lula_grew_more)} urnas (${fmtPct(rn.lula_grew_more/totS*100)})</strong>
+              </div>
+            </div>
+          `;
+        }
 
+        const chartRegions = document.getElementById('chart-t1-t2-regions');
+        if (chartRegions && cg.por_regiao) {
+          chartRegions.innerHTML = `
+            <div style="display:flex;flex-direction:column;gap:0.55rem;margin-top:0.4rem;">
+              ${cg.por_regiao.map(r => `
+                <div style="padding:0.7rem 0.95rem;border-radius:8px;background:var(--surface-alt);border:1px solid var(--border);font-size:0.83rem;">
+                  <div class="stat-row" style="font-weight:700;margin-bottom:0.25rem;">
+                    <span>${r.regiao} (${fmtInt(r.secoes)} urnas &bull; ${fmtInt(r.flips_22_to_13)} viradas 22&rarr;13)</span>
+                    <span>2ºT: Lula <strong style="color:var(--lula)">${fmtPct(r.t2_lula_pct)}</strong> &times; Flávio <strong style="color:var(--flavio)">${fmtPct(r.t2_flavio_pct)}</strong></span>
+                  </div>
+                  <div class="stat-row" style="color:var(--text-muted);margin-bottom:0.3rem;">
+                    <span>1ºT: Lula ${fmtPct(r.t1_lula_pct)} | Flávio ${fmtPct(r.t1_flavio_pct)} | 3ª Via ${fmtPct(r.t1_3v_pct)}</span>
+                    <span>&Delta;: Lula <strong style="color:var(--lula)">+${fmtInt(r.delta_13)}</strong> | Flávio <strong style="color:var(--flavio)">+${fmtInt(r.delta_22)}</strong></span>
+                  </div>
+                  <div class="bar-dual" style="margin-top:0;block-size:0.5rem;">
+                    <div class="bar-lula" style="inline-size:${r.t2_lula_pct}%"></div>
+                    <div class="bar-flavio" style="inline-size:${r.t2_flavio_pct}%"></div>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          `;
+        }
+
+        // Decomposição Ecológica
         const ecoUfSelect = document.getElementById('eco-uf-select');
         const ecoLocSelect = document.getElementById('eco-loc-select');
         const ecoMeta = document.getElementById('eco-slice-meta');
@@ -1290,30 +2044,39 @@
           const ufLabel = uf === 'BR' ? 'Brasil (Nacional)' : uf;
           if (ecoMeta) {
             ecoMeta.innerHTML = `
-              <strong>${ufLabel} • ${locLabel}</strong> &mdash; Urnas analisadas: <strong>${fmtInt(curSlice.secoes)}</strong> | Ajuste do Modelo (R²): <strong>${curSlice.r2}</strong> (Erro padrão: ±${curSlice.res_std} votos/seção)<br>
-              Expansão no 2ºT: <strong>${fmtInt(curSlice.pool_total)} novos votos</strong> &rarr; Lula <strong>${fmtPct(curSlice.d13_share)}</strong> × Flávio <strong>${fmtPct(curSlice.d22_share)}</strong>
+              <strong>${ufLabel} &bull; ${locLabel}</strong> &mdash; Urnas analisadas: <strong>${fmtInt(curSlice.secoes)}</strong> | Ajuste do Modelo (R²): <strong>${curSlice.r2}</strong> (Erro padrão: &plusmn;${curSlice.res_std} votos/urna)<br>
+              Expansão de Votos no 2ºT: <strong>${fmtInt(curSlice.pool_total)} votos</strong> &rarr; Absorção: Lula <strong>${fmtPct(curSlice.d13_share)}</strong> &times; Flávio <strong>${fmtPct(curSlice.d22_share)}</strong>
             `;
           }
 
           if (chartEcoDecomp) {
             chartEcoDecomp.innerHTML = `
-              <div style="display:flex;flex-direction:column;gap:0.55rem;margin-top:0.4rem;">
+              <div style="display:flex;flex-direction:column;gap:0.6rem;margin-top:0.4rem;">
                 ${curSlice.sources.map(s => {
                   const s13 = s.votos_13 >= 0 ? `+${fmtInt(s.votos_13)}` : fmtInt(s.votos_13);
                   const s22 = s.votos_22 >= 0 ? `+${fmtInt(s.votos_22)}` : fmtInt(s.votos_22);
+                  const ciWidth = Math.max(0, s.ci_95_hi - s.ci_95_lo);
                   return `
-                    <div style="padding:0.65rem 0.85rem;border-radius:0.5rem;background:var(--surface-alt);border:1px solid var(--border);font-size:0.83rem;">
+                    <div style="padding:0.75rem 0.95rem;border-radius:8px;background:var(--surface-alt);border:1px solid var(--border);font-size:0.83rem;">
                       <div class="stat-row" style="font-weight:700;margin-bottom:0.25rem;">
                         <span>${s.label}</span>
-                        <span>Vol: <strong>${fmtInt(s.volume)}</strong> (${fmtPct(s.pct_pool)} do pool)</span>
+                        <span>Volume: <strong>${fmtInt(s.volume)}</strong> (${fmtPct(s.pct_pool)} do pool)</span>
                       </div>
                       <div class="stat-row" style="color:var(--text-muted);margin-bottom:0.35rem;">
-                        <span>Para Lula: <strong style="color:var(--lula)">${fmtPct(s.beta_13, 1)} (${s13})</strong> <span style="font-size:0.75rem;opacity:0.85;">[IC 95%: ${fmtPct(s.ci_95_lo, 1)}..${fmtPct(s.ci_95_hi, 1)}]</span></span>
+                        <span>Para Lula: <strong style="color:var(--lula)">${fmtPct(s.beta_13, 1)} (${s13})</strong></span>
                         <span>Para Flávio: <strong style="color:var(--flavio)">${fmtPct(s.beta_22, 1)} (${s22})</strong></span>
                       </div>
-                      <div class="bar-dual" style="margin-block-start:0.2rem;block-size:0.45rem;">
+                      <div class="bar-dual" style="margin-block-start:0.2rem;block-size:0.55rem;">
                         <div class="bar-lula" style="inline-size:${s.beta_13}%;"></div>
                         <div class="bar-flavio" style="inline-size:${s.beta_22}%;"></div>
+                      </div>
+                      <div class="whisker-wrapper" style="margin-top:0.35rem;">
+                        <span style="font-size:0.72rem;">IC 95%:</span>
+                        <div class="whisker-track" title="Intervalo de credibilidade 95%: ${fmtPct(s.ci_95_lo, 1)} a ${fmtPct(s.ci_95_hi, 1)}">
+                          <div class="whisker-range" style="inset-inline-start:${s.ci_95_lo}%;inline-size:${ciWidth}%;"></div>
+                          <div class="whisker-point" style="inset-inline-start:${s.beta_13}%;"></div>
+                        </div>
+                        <span style="font-weight:600;">[${fmtPct(s.ci_95_lo, 1)} &hellip; ${fmtPct(s.ci_95_hi, 1)}]</span>
                       </div>
                     </div>
                   `;
@@ -1347,18 +2110,24 @@
         }
         renderEcoSlice();
 
-        if (cg.lideres_terceira_via) {
-          document.getElementById('chart-3v-leaders').innerHTML = `
-            <div style="display:flex;flex-direction:column;gap:0.55rem;margin-top:0.5rem;">
+        // Líderes 3ª Via
+        const chart3vLeaders = document.getElementById('chart-3v-leaders');
+        if (chart3vLeaders && cg.lideres_terceira_via) {
+          chart3vLeaders.innerHTML = `
+            <div style="display:flex;flex-direction:column;gap:0.55rem;margin-top:0.4rem;">
               ${cg.lideres_terceira_via.map(l => `
-                <div style="padding:0.65rem 0.9rem;border-radius:0.5rem;background:var(--surface-alt);border:1px solid var(--border);font-size:0.82rem;">
-                  <div class="stat-row" style="font-weight:700;margin-bottom:0.2rem;">
+                <div style="padding:0.75rem 0.95rem;border-radius:8px;background:var(--surface-alt);border:1px solid var(--border);font-size:0.83rem;">
+                  <div class="stat-row" style="font-weight:700;margin-bottom:0.25rem;">
                     <span>${l.label} (${fmtInt(l.secoes)} urnas)</span>
-                    <span>Cresc. Líquido: Lula <strong style="color:var(--lula)">${fmtPct(l.share_crescimento_lula, 1)}</strong> × Flávio <strong style="color:var(--flavio)">${fmtPct(100 - l.share_crescimento_lula, 1)}</strong></span>
+                    <span>Crescimento Líquido: Lula <strong style="color:var(--lula)">${fmtPct(l.share_crescimento_lula, 1)}</strong> &times; Flávio <strong style="color:var(--flavio)">${fmtPct(100 - l.share_crescimento_lula, 1)}</strong></span>
                   </div>
-                  <div class="stat-row" style="color:var(--text-muted);">
-                    <span>1ºT: 13 (${fmtPct(l.t1_lula_pct)}) × 22 (${fmtPct(l.t1_flavio_pct)}) | 2ºT: 13 (${fmtPct(l.t2_lula_pct)}) × 22 (${fmtPct(l.t2_flavio_pct)})</span>
-                    <span>Δ13: <strong>+${fmtInt(l.delta_13)}</strong> | Δ22: <strong>+${fmtInt(l.delta_22)}</strong></span>
+                  <div class="stat-row" style="color:var(--text-muted);margin-bottom:0.35rem;">
+                    <span>1ºT: 13 (${fmtPct(l.t1_lula_pct)}) &times; 22 (${fmtPct(l.t1_flavio_pct)}) &bull; 2ºT: 13 (${fmtPct(l.t2_lula_pct)}) &times; 22 (${fmtPct(l.t2_flavio_pct)})</span>
+                    <span>&Delta;13: <strong style="color:var(--lula)">+${fmtInt(l.delta_13)}</strong> | &Delta;22: <strong style="color:var(--flavio)">+${fmtInt(l.delta_22)}</strong></span>
+                  </div>
+                  <div class="bar-dual" style="margin-top:0;block-size:0.55rem;">
+                    <div class="bar-lula" style="inline-size:${l.share_crescimento_lula}%"></div>
+                    <div class="bar-flavio" style="inline-size:${100 - l.share_crescimento_lula}%"></div>
                   </div>
                 </div>
               `).join('')}
@@ -1366,8 +2135,9 @@
           `;
         }
 
-        if (cg.faixas_predominancia_flavio) {
-          const tbodyFlavioBands = document.getElementById('tbody-flavio-bands');
+        // Tabela Faixas Flávio
+        const tbodyFlavioBands = document.getElementById('tbody-flavio-bands');
+        if (tbodyFlavioBands && cg.faixas_predominancia_flavio) {
           cg.faixas_predominancia_flavio.forEach(b => {
             const tr = document.createElement('tr');
             const dc = b.delta_comp >= 0 ? `+${fmtInt(b.delta_comp)} (+${fmtPct(b.delta_comp_pct)})` : `${fmtInt(b.delta_comp)} (${fmtPct(b.delta_comp_pct)})`;
@@ -1381,60 +2151,79 @@
               <td class="num"><strong>${fmtInt(b.d22_neg_secoes)} (${fmtPct(b.d22_neg_secoes_pct, 1)})</strong></td>
               <td class="num"><span class="pill-lula">+${fmtInt(b.delta_13)} (+${fmtPct(b.delta_13_pct)})</span></td>
               <td class="num"><span class="pill-flavio">+${fmtInt(b.delta_22)} (+${fmtPct(b.delta_22_pct)})</span></td>
-              <td class="num">13: <strong>${fmtPct(b.share_crescimento_lula, 1)}</strong> × 22: ${fmtPct(100 - b.share_crescimento_lula, 1)}</td>
+              <td class="num">13: <strong>${fmtPct(b.share_crescimento_lula, 1)}</strong> &times; 22: ${fmtPct(100 - b.share_crescimento_lula, 1)}</td>
             `;
             tbodyFlavioBands.appendChild(tr);
           });
         }
 
-        if (cg.faixas_terceira_via) {
-          const tbody3vBands = document.getElementById('tbody-3v-bands');
+        // Tabela Faixas 3ª Via
+        const tbody3vBands = document.getElementById('tbody-3v-bands');
+        if (tbody3vBands && cg.faixas_terceira_via) {
           cg.faixas_terceira_via.forEach(b => {
             const tr = document.createElement('tr');
             const dc = b.delta_comp >= 0 ? `+${fmtInt(b.delta_comp)} (+${fmtPct(b.delta_comp_pct)})` : `${fmtInt(b.delta_comp)} (${fmtPct(b.delta_comp_pct)})`;
             tr.innerHTML = `
               <th>${b.label}</th>
               <td class="num">${fmtInt(b.secoes)}</td>
-              <td class="num">${fmtPct(b.t1_lula_pct)} × ${fmtPct(b.t1_flavio_pct)}</td>
+              <td class="num">${fmtPct(b.t1_lula_pct)} &times; ${fmtPct(b.t1_flavio_pct)}</td>
               <td class="num"><strong>${fmtInt(b.t1_3v)} (${fmtPct(b.t1_3v_pct)})</strong></td>
               <td class="num">${dc}</td>
-              <td class="num">${fmtPct(b.t2_lula_pct)} × ${fmtPct(b.t2_flavio_pct)}</td>
+              <td class="num">${fmtPct(b.t2_lula_pct)} &times; ${fmtPct(b.t2_flavio_pct)}</td>
               <td class="num"><span class="pill-lula">+${fmtInt(b.delta_13)} (+${fmtPct(b.delta_13_pct)})</span></td>
               <td class="num"><span class="pill-flavio">+${fmtInt(b.delta_22)} (+${fmtPct(b.delta_22_pct)})</span></td>
-              <td class="num">13: <strong>${fmtPct(b.share_crescimento_lula, 1)}</strong> × 22: ${fmtPct(100 - b.share_crescimento_lula, 1)}</td>
+              <td class="num">13: <strong>${fmtPct(b.share_crescimento_lula, 1)}</strong> &times; 22: ${fmtPct(100 - b.share_crescimento_lula, 1)}</td>
             `;
             tbody3vBands.appendChild(tr);
           });
         }
 
+        // Tabela UFs
         const tbodyT1T2Ufs = document.getElementById('tbody-t1-t2-ufs');
-        cg.por_uf.forEach(u => {
-          const tr = document.createElement('tr');
-          const d22Str = u.delta_22 >= 0 ? `+${fmtInt(u.delta_22)}` : fmtInt(u.delta_22);
-          tr.innerHTML = `
-            <th>${u.uf} (${u.regiao})</th>
-            <td class="num">${fmtInt(u.secoes)}</td>
-            <td class="num">${fmtPct(u.t1_lula_pct)}</td>
-            <td class="num">${fmtPct(u.t1_flavio_pct)}</td>
-            <td class="num">${fmtPct(u.t1_3v_pct)}</td>
-            <td class="num"><span class="pill-lula">${fmtPct(u.t2_lula_pct)}</span></td>
-            <td class="num"><span class="pill-flavio">${fmtPct(u.t2_flavio_pct)}</span></td>
-            <td class="num"><strong>+${fmtInt(u.delta_13)}</strong></td>
-            <td class="num">${d22Str}</td>
-            <td class="num"><strong>${fmtInt(u.flips_22_to_13)}</strong></td>
-          `;
-          tbodyT1T2Ufs.appendChild(tr);
-        });
+        if (tbodyT1T2Ufs && cg.por_uf) {
+          cg.por_uf.forEach(u => {
+            const tr = document.createElement('tr');
+            const d22Str = u.delta_22 >= 0 ? `+${fmtInt(u.delta_22)}` : fmtInt(u.delta_22);
+            tr.innerHTML = `
+              <th>${u.uf} (${u.regiao})</th>
+              <td class="num">${fmtInt(u.secoes)}</td>
+              <td class="num">${fmtPct(u.t1_lula_pct)}</td>
+              <td class="num">${fmtPct(u.t1_flavio_pct)}</td>
+              <td class="num">${fmtPct(u.t1_3v_pct)}</td>
+              <td class="num"><span class="pill-lula">${fmtPct(u.t2_lula_pct)}</span></td>
+              <td class="num"><span class="pill-flavio">${fmtPct(u.t2_flavio_pct)}</span></td>
+              <td class="num" style="color:var(--lula);font-weight:700;">+${fmtInt(u.delta_13)}</td>
+              <td class="num" style="color:var(--flavio);font-weight:700;">${d22Str}</td>
+              <td class="num"><strong>${fmtInt(u.flips_22_to_13)}</strong></td>
+            `;
+            tbodyT1T2Ufs.appendChild(tr);
+          });
+        }
 
+        // Explorador de Municípios (Aba 1)
         const tbodyT1T2Muns = document.getElementById('tbody-t1-t2-muns');
         const t1t2MunSearch = document.getElementById('t1t2-mun-search');
+        const t1t2MunCount = document.getElementById('t1t2-mun-count');
+
         function renderT1T2Muns() {
-          const q = t1t2MunSearch.value.trim().toLowerCase();
+          if (!tbodyT1T2Muns || !cg.top_300_municipios) return;
+          const q = t1t2MunSearch ? t1t2MunSearch.value.trim().toLowerCase() : '';
           tbodyT1T2Muns.innerHTML = '';
-          cg.top_300_municipios.filter(m => {
+          const filtered = cg.top_300_municipios.filter(m => {
             if (!q) return true;
             return m.municipio.toLowerCase().includes(q) || m.uf.toLowerCase().includes(q);
-          }).forEach(m => {
+          });
+
+          if (t1t2MunCount) {
+            t1t2MunCount.textContent = `Mostrando ${filtered.length} de ${cg.top_300_municipios.length} municípios`;
+          }
+
+          if (filtered.length === 0) {
+            tbodyT1T2Muns.innerHTML = `<tr><td colspan="10" class="empty-state">Nenhum município encontrado para o termo pesquisado.</td></tr>`;
+            return;
+          }
+
+          filtered.forEach(m => {
             const tr = document.createElement('tr');
             tr.innerHTML = `
               <th>${m.municipio} (${m.uf})</th>
@@ -1444,21 +2233,26 @@
               <td class="num">${fmtPct(m.t1_3v_pct)}</td>
               <td class="num"><span class="pill-lula">${fmtPct(m.t2_lula_pct)}</span></td>
               <td class="num"><span class="pill-flavio">${fmtPct(m.t2_flavio_pct)}</span></td>
-              <td class="num"><strong>+${fmtInt(m.delta_13)}</strong></td>
-              <td class="num">+${fmtInt(m.delta_22)}</td>
+              <td class="num" style="color:var(--lula);font-weight:700;">+${fmtInt(m.delta_13)}</td>
+              <td class="num" style="color:var(--flavio);font-weight:700;">+${fmtInt(m.delta_22)}</td>
               <td class="num"><strong>${fmtInt(m.flips_22_to_13)}</strong></td>
             `;
             tbodyT1T2Muns.appendChild(tr);
           });
         }
-        t1t2MunSearch.addEventListener('input', renderT1T2Muns);
+
+        if (t1t2MunSearch) t1t2MunSearch.addEventListener('input', renderT1T2Muns);
         renderT1T2Muns();
 
+        // Explorador Urna por Urna (Aba 1)
         const tbodyTopSecs = document.getElementById('tbody-top-secs');
         const secSearch = document.getElementById('sec-search');
         const secFilterMode = document.getElementById('sec-filter-mode');
+        const secCount = document.getElementById('sec-count');
+
         function renderTopSecs() {
-          const q = secSearch.value.trim().toLowerCase();
+          if (!tbodyTopSecs || !cg.top_swing_secoes) return;
+          const q = secSearch ? secSearch.value.trim().toLowerCase() : '';
           const mode = secFilterMode ? secFilterMode.value : 'top10_geral';
           tbodyTopSecs.innerHTML = '';
 
@@ -1479,8 +2273,18 @@
             return Math.abs(b.delta_13 - b.delta_22) - Math.abs(a.delta_13 - a.delta_22);
           });
 
+          const totalMatches = list.length;
           if (mode !== 'all') {
             list = list.slice(0, 10);
+          }
+
+          if (secCount) {
+            secCount.textContent = `Mostrando ${list.length} de ${totalMatches} urnas`;
+          }
+
+          if (list.length === 0) {
+            tbodyTopSecs.innerHTML = `<tr><td colspan="10" class="empty-state">Nenhuma seção eleitoral encontrada para a busca informada.</td></tr>`;
+            return;
           }
 
           list.forEach((s, idx) => {
@@ -1488,7 +2292,7 @@
             const s13 = s.delta_13 >= 0 ? `+${fmtInt(s.delta_13)}` : fmtInt(s.delta_13);
             const s22 = s.delta_22 >= 0 ? `+${fmtInt(s.delta_22)}` : fmtInt(s.delta_22);
             tr.innerHTML = `
-              <th>#${idx + 1} • ${s.uf} - ${s.municipio} (Z:${s.zona} S:${s.secao})</th>
+              <th>#${idx + 1} &bull; ${s.uf} - ${s.municipio} (Z:${s.zona} S:${s.secao})</th>
               <td><code>${s.virada}</code></td>
               <td><span class="pill-ok">Mesa Regular (Sem fusão)</span></td>
               <td class="num">${fmtInt(s.t1_13)}</td>
@@ -1496,13 +2300,14 @@
               <td class="num">${fmtInt(s.t1_3v)}</td>
               <td class="num"><span class="pill-lula">${fmtInt(s.t2_13)}</span></td>
               <td class="num"><span class="pill-flavio">${fmtInt(s.t2_22)}</span></td>
-              <td class="num"><strong>${s13}</strong></td>
-              <td class="num"><strong>${s22}</strong></td>
+              <td class="num" style="color:var(--lula);font-weight:700;">${s13}</td>
+              <td class="num" style="color:var(--flavio);font-weight:700;">${s22}</td>
             `;
             tbodyTopSecs.appendChild(tr);
           });
         }
-        secSearch.addEventListener('input', renderTopSecs);
+
+        if (secSearch) secSearch.addEventListener('input', renderTopSecs);
         if (secFilterMode) {
           secFilterMode.addEventListener('change', () => {
             renderTopSecs();
